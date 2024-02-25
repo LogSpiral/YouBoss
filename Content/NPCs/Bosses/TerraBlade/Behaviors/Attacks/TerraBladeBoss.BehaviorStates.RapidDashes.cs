@@ -59,7 +59,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             // Prioritize this attack a bit after projectile oriented attacks.
             if (PreviousState == TerraBladeAIType.DiamondSweeps || PreviousState == TerraBladeAIType.EnergyBeamSpin)
-                return 1.6f;
+                return 1.67f;
+
+            // Make this attack a bit more common than usual in the first phase, to ensure that it's not too projectile-centric.
+            if (!InPhase2)
+                return 1.36f;
 
             return 1f;
         }
