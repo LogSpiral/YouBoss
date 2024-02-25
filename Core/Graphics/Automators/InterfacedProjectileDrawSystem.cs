@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace YouBoss.Core.Graphics.Automators

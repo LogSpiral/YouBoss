@@ -10,7 +10,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using YouBoss.Content.Particles;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {

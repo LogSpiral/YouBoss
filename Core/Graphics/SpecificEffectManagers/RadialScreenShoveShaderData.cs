@@ -3,7 +3,6 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
 using YouBoss.Core.Graphics.SpecificEffectManagers;
 
 namespace YouBoss.Core.Graphics.Shaders.Screen
