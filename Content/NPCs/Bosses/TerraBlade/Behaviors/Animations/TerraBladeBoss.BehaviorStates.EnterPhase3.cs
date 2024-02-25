@@ -18,7 +18,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// Whether the terra blade is in its second phase.
         /// </summary>
-        public bool InPhase3
+        public bool Phase3
         {
             get;
             set;
@@ -50,13 +50,13 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Prepare to enter phase 2 if ready. This will ensure that once the attack has finished the terra blade will enter the second phase.
             StateMachine.AddTransitionStateHijack(originalState =>
             {
-                if (!InPhase3 && LifeRatio < Phase3LifeRatio)
+                if (!Phase3 && LifeRatio < Phase3LifeRatio)
                     return TerraBladeAIType.EnterPhase3;
 
                 return originalState;
             }, _ =>
             {
-                InPhase3 = true;
+                Phase3 = true;
                 PreviousTwoStates[^1] = FirstPhase3Attack;
             });
             StateMachine.RegisterTransition(TerraBladeAIType.EnterPhase3, FirstPhase3Attack, false, () =>

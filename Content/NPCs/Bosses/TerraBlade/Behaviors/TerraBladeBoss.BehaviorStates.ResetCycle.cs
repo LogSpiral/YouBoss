@@ -53,13 +53,13 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             rng.Add(TerraBladeAIType.DashSpin, CalculateDashSpinAttackWeight());
             rng.Add(TerraBladeAIType.AcceleratingBeamWall, CalculateAcceleratingBeamWallAttackWeight());
 
-            if (InPhase2)
+            if (Phase2)
             {
                 rng.Add(TerraBladeAIType.DiamondSweeps, CalculateDiamondSweepsAttackWeight());
                 rng.Add(TerraBladeAIType.TelegraphedBeamDashes, CalculateTelegraphedBeamDashesAttackWeight());
             }
 
-            if (InPhase3)
+            if (Phase3)
             {
                 rng.Add(TerraBladeAIType.BreakIntoTrueBlades, CalculateBreakIntoTrueBladesAttackWeight());
                 rng.Add(TerraBladeAIType.AerialSwoopDashes, CalculateAerialSwoopDashesAttackWeight());

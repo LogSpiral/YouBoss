@@ -23,17 +23,17 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long it takes for split blades to slow down after being released during the true blades attack.
         /// </summary>
-        public int BreakIntoTrueBlades_SplitSlowdownTime => SecondsToFrames(InPhase3 ? 0.25f : 0.333f);
+        public int BreakIntoTrueBlades_SplitSlowdownTime => SecondsToFrames(Phase3 ? 0.25f : 0.333f);
 
         /// <summary>
         /// How long it takes for split blades to go back to moving again after completely slowing down during the true blades attack.
         /// </summary>
-        public int BreakIntoTrueBlades_SplitMoveWaitTime => SecondsToFrames(InPhase3 ? 0.3f : 0.333f);
+        public int BreakIntoTrueBlades_SplitMoveWaitTime => SecondsToFrames(Phase3 ? 0.3f : 0.333f);
 
         /// <summary>
         /// How long the split blades spin in place uninterrupted during the true blades attack.
         /// </summary>
-        public int BreakIntoTrueBlades_SplitSpinTime => SecondsToFrames(InPhase3 ? 0.45f : 0.583f);
+        public int BreakIntoTrueBlades_SplitSpinTime => SecondsToFrames(Phase3 ? 0.45f : 0.583f);
 
         /// <summary>
         /// The spin offset during of the split blades during the true blades attack.
@@ -74,7 +74,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
         public float CalculateBreakIntoTrueBladesAttackWeight()
         {
-            return InPhase3 ? 1.2f : 1f;
+            return Phase3 ? 1.2f : 1f;
         }
 
         public void DoBehavior_BreakIntoTrueBlades()
@@ -237,7 +237,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                         NewProjectileBetter(NPC.Center, lightBladeVelocity, ModContent.ProjectileType<ArcingLightBeam>(), TerraBeamDamage, 0f, -1, -bladeArcSpeed);
                         NewProjectileBetter(NPC.Center, nightBladeVelocity, ModContent.ProjectileType<ArcingNightBeam>(), TerraBeamDamage, 0f, -1, bladeArcSpeed);
                         NewProjectileBetter(NPC.Center, lightBladeVelocity * 0.2f, ModContent.ProjectileType<ArcingLightBeam>(), TerraBeamDamage, 0f, -1, bladeArcSpeed);
-                        if (InPhase3)
+                        if (Phase3)
                             NewProjectileBetter(NPC.Center, lightBladeVelocity * 0.2f, ModContent.ProjectileType<ArcingNightBeam>(), TerraBeamDamage, 0f, -1, -bladeArcSpeed, -5f);
                     }
 

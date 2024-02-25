@@ -240,7 +240,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             {
                 [0] = CanMove,
                 [1] = PerformingStartAnimation,
-                [2] = InPhase2,
+                [2] = Phase2,
             };
             writer.Write(b1);
 
@@ -260,7 +260,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             BitsByte b1 = reader.ReadByte();
             CanMove = b1[0];
             PerformingStartAnimation = b1[1];
-            InPhase2 = b1[2];
+            Phase2 = b1[2];
 
             // Read float data.
             NPC.Opacity = reader.ReadSingle();
@@ -328,7 +328,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.noTileCollide = true;
 
             // Make a ton of stars appear in the sky in the third phase.
-            if (InPhase3)
+            if (Phase3)
                 ExtraStarsInSkyCount = Clamp(ExtraStarsInSkyCount + 0.09f, 0f, 360f); ;
 
             // Handle AI behaviors.
@@ -390,9 +390,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <param name="phase3Value">The value to select in phase 3.</param>
         public float ByPhase(float phase1Value, float phase2Value, float phase3Value)
         {
-            if (InPhase3)
+            if (Phase3)
                 return phase3Value;
-            if (InPhase2)
+            if (Phase2)
                 return phase2Value;
 
             return phase1Value;
