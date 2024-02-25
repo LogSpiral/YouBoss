@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
 {
     public class TerraBladeSkyScene : ModSceneEffect
     {

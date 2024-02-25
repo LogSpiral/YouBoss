@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NoxusBoss.Common.Tools.DataStructures;
-using NoxusBoss.Core.Graphics.Automators;
+using YouBoss.Common.Tools.DataStructures;
+using YouBoss.Core.Graphics.Automators;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
 {
     public class TelegraphedTerraBeam : ModProjectile, IDrawAdditive, IProjOwnedByBoss<TerraBladeBoss>
     {

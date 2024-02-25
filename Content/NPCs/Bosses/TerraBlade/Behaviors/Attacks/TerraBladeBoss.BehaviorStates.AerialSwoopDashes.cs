@@ -1,17 +1,17 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using NoxusBoss.Assets;
-using NoxusBoss.Common.Tools.Reflection;
-using NoxusBoss.Common.Utilities;
-using NoxusBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers;
-using NoxusBoss.Content.NPCs.Bosses.TerraBlade.Projectiles;
-using NoxusBoss.Core.Graphics.SpecificEffectManagers;
+using YouBoss.Assets;
+using YouBoss.Common.Tools.Reflection;
+using YouBoss.Common.Utilities;
+using YouBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers;
+using YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles;
+using YouBoss.Core.Graphics.SpecificEffectManagers;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     public partial class TerraBladeBoss : ModNPC
     {

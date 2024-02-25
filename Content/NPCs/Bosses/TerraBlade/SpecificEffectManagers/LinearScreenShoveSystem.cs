@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers
+namespace YouBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers
 {
     public class LinearScreenShoveSystem : ModSystem
     {

@@ -2,14 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria;
-using NoxusBoss.Common.Gameplay.World.GameScenes.NoxusAppearances;
+using YouBoss.Common.Gameplay.World.GameScenes.NoxusAppearances;
 using ReLogic.Content;
 using Terraria.ID;
 using Terraria.ModLoader;
-using NoxusBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers;
-using NoxusBoss.Core.Graphics.Shaders;
+using YouBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers;
+using YouBoss.Core.Graphics.Shaders;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
 {
     public class TerraBladeSky : CustomSky
     {

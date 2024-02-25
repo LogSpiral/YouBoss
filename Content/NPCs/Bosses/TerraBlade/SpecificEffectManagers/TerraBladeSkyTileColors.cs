@@ -1,7 +1,7 @@
 ﻿using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
 {
     public class TerraBladeSkyTileColors : ModSystem
     {

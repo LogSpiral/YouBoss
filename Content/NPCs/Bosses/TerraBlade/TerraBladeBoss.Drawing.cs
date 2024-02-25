@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NoxusBoss.Content.NPCs.Bosses.Noxus.FirstPhaseForm;
-using NoxusBoss.Core.Graphics.Primitives;
-using NoxusBoss.Core.Graphics.Shaders;
+using YouBoss.Content.NPCs.Bosses.Noxus.FirstPhaseForm;
+using YouBoss.Core.Graphics.Primitives;
+using YouBoss.Core.Graphics.Shaders;
 using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     [AutoloadBossHead()]
     public partial class TerraBladeBoss : ModNPC

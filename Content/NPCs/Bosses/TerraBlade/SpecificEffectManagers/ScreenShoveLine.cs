@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace NoxusBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers
+namespace YouBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers
 {
     public class ScreenShoveLine(int lifetime, Vector2 direction, Vector2 origin, Func<float, float> widthFunction)
     {

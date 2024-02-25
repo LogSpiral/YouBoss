@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using NoxusBoss.Common.Tools.Reflection;
+using YouBoss.Common.Tools.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     public partial class TerraBladeBoss : ModNPC
     {

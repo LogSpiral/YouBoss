@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using NoxusBoss.Common.Tools.Reflection;
-using NoxusBoss.Core.Graphics.SpecificEffectManagers;
+using YouBoss.Common.Tools.Reflection;
+using YouBoss.Core.Graphics.SpecificEffectManagers;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     public partial class TerraBladeBoss : ModNPC
     {

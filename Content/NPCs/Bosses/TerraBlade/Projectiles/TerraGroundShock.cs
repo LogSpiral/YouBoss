@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NoxusBoss.Common.Tools.DataStructures;
-using NoxusBoss.Core.Graphics.Automators;
+using YouBoss.Common.Tools.DataStructures;
+using YouBoss.Core.Graphics.Automators;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
 {
     public class TerraGroundShock : ModProjectile, IDrawsOverTiles, IProjOwnedByBoss<TerraBladeBoss>
     {

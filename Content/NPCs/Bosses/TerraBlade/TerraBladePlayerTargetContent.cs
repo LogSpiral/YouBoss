@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NoxusBoss.Content.NPCs.Bosses.TerraBlade;
+using YouBoss.Content.NPCs.Bosses.TerraBlade;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.Noxus.FirstPhaseForm
+namespace YouBoss.Content.NPCs.Bosses.Noxus.FirstPhaseForm
 {
     public class TerraBladePlayerTargetContent : ARenderTargetContentByRequest
     {

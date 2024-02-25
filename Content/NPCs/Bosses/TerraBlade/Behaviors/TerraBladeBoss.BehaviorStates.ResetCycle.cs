@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NoxusBoss.Common.Tools.Reflection;
+using YouBoss.Common.Tools.Reflection;
 using Terraria;
 using Terraria.Utilities;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     public partial class TerraBladeBoss
     {

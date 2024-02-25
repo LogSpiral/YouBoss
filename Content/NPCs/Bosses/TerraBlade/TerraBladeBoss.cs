@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NoxusBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
+using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
@@ -9,7 +9,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     public partial class TerraBladeBoss : ModNPC
     {

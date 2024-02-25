@@ -1,8 +1,8 @@
-﻿using NoxusBoss.Common.Tools.DataStructures;
-using NoxusBoss.Common.Tools.Reflection;
+﻿using YouBoss.Common.Tools.DataStructures;
+using YouBoss.Common.Tools.Reflection;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
     public partial class TerraBladeBoss : ModNPC
     {
@@ -28,7 +28,7 @@ namespace NoxusBoss.Content.NPCs.Bosses.TerraBlade
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_EnterPhase3()
         {
-            // Prepare to enter phase 2 if ready. This will ensure that once the attack has finished Nameless will enter the second phase.
+            // Prepare to enter phase 2 if ready. This will ensure that once the attack has finished the terra blade will enter the second phase.
             StateMachine.AddTransitionStateHijack(originalState =>
             {
                 if (!InPhase3 && LifeRatio < Phase3LifeRatio)
