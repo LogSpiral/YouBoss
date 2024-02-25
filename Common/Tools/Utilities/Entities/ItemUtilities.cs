@@ -1,9 +1,9 @@
-﻿using NoxusBoss.Core.CrossCompatibility.Inbound;
+﻿using YouBoss.Core.CrossCompatibility.Inbound;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     // Convenient utilities that basically just allow for the safe setting of Calamity rarities and sell prices without a strong reference.
     public static partial class Utilities

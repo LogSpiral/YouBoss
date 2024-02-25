@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     public static partial class Utilities
     {

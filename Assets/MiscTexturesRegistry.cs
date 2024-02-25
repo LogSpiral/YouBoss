@@ -12,11 +12,11 @@ namespace YouBoss.Assets
 
         public const string InvisiblePixelPath = $"{ExtraTexturesPath}/InvisiblePixel";
 
-        public const string ExtraTexturesPath = "NoxusBoss/Assets/ExtraTextures";
+        public const string ExtraTexturesPath = "YouBoss/Assets/ExtraTextures";
 
-        public const string GreyscaleTexturesPath = "NoxusBoss/Assets/ExtraTextures/GreyscaleTextures";
+        public const string GreyscaleTexturesPath = "YouBoss/Assets/ExtraTextures/GreyscaleTextures";
 
-        public const string NoiseTexturesPath = "NoxusBoss/Assets/ExtraTextures/Noise";
+        public const string NoiseTexturesPath = "YouBoss/Assets/ExtraTextures/Noise";
 
         public const string ChromaticBurstPath = $"{GreyscaleTexturesPath}/ChromaticBurst";
 

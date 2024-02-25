@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     public static partial class Utilities
     {
@@ -47,71 +47,67 @@ namespace NoxusBoss.Common.Utilities
             bool failedToDrawAfterimages = false;
 
             // Determine whether afterimages should be drawn at all.
-            bool afterimagesArePermitted = GetFromCalamityConfig("Afterimages", true);
-            if (afterimagesArePermitted)
+            Vector2 centerOffset = drawCentered ? proj.Size * 0.5f : Vector2.Zero;
+            switch (mode)
             {
-                Vector2 centerOffset = drawCentered ? proj.Size * 0.5f : Vector2.Zero;
-                switch (mode)
-                {
-                    // Standard afterimages. No customizable features other than total afterimage count.
-                    // Type 0 afterimages linearly scale down from 100% to 0% opacity. Their color and lighting is equal to the main projectile's.
-                    case 0:
-                        int afterimageCount = afterimageCountOverride ?? proj.oldPos.Length;
-                        for (int i = afterimageCount - 1; i >= 0; i--)
+                // Standard afterimages. No customizable features other than total afterimage count.
+                // Type 0 afterimages linearly scale down from 100% to 0% opacity. Their color and lighting is equal to the main projectile's.
+                case 0:
+                    int afterimageCount = afterimageCountOverride ?? proj.oldPos.Length;
+                    for (int i = afterimageCount - 1; i >= 0; i--)
+                    {
+                        float scale = proj.scale * Lerp(1f, minScale, 1f - (afterimageCount - i) / (float)afterimageCount);
+                        Vector2 drawPos = Vector2.Lerp(proj.oldPos[i] + centerOffset, proj.Center, positionClumpInterpolant) - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
+                        Color color = proj.GetAlpha(lightColor) * ((proj.oldPos.Length - i) / (float)proj.oldPos.Length);
+                        Main.spriteBatch.Draw(texture, drawPos, new Rectangle?(rectangle), color, rotation, origin, scale, spriteEffects, 0f);
+                    }
+                    break;
+
+                // Paladin's Hammer style afterimages. Can be optionally spaced out further by using the typeOneDistanceMultiplier variable.
+                // Type 1 afterimages linearly scale down from 66% to 0% opacity. They otherwise do not differ from type 0.
+                case 1:
+                    // Safety check: the loop must increment
+                    int increment = Math.Max(1, typeOneIncrement);
+                    Color drawColor = proj.GetAlpha(lightColor);
+                    afterimageCount = afterimageCountOverride ?? ProjectileID.Sets.TrailCacheLength[proj.type];
+                    int i2 = afterimageCount - 1;
+                    while (i2 >= 0)
+                    {
+                        float scale = proj.scale * Lerp(1f, minScale, 1f - (afterimageCount - i2) / (float)afterimageCount);
+                        Vector2 drawPos = Vector2.Lerp(proj.oldPos[i2] + centerOffset, proj.Center, positionClumpInterpolant) - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
+                        if (i2 > 0)
                         {
-                            float scale = proj.scale * Lerp(1f, minScale, 1f - (afterimageCount - i) / (float)afterimageCount);
-                            Vector2 drawPos = Vector2.Lerp(proj.oldPos[i] + centerOffset, proj.Center, positionClumpInterpolant) - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
-                            Color color = proj.GetAlpha(lightColor) * ((proj.oldPos.Length - i) / (float)proj.oldPos.Length);
-                            Main.spriteBatch.Draw(texture, drawPos, new Rectangle?(rectangle), color, rotation, origin, scale, spriteEffects, 0f);
+                            float opacity = afterimageCount - i2;
+                            drawColor *= opacity / (afterimageCount * 1.5f);
                         }
-                        break;
+                        Main.spriteBatch.Draw(texture, drawPos, new Rectangle?(rectangle), drawColor, rotation, origin, scale, spriteEffects, 0f);
+                        i2 -= increment;
+                    }
+                    break;
 
-                    // Paladin's Hammer style afterimages. Can be optionally spaced out further by using the typeOneDistanceMultiplier variable.
-                    // Type 1 afterimages linearly scale down from 66% to 0% opacity. They otherwise do not differ from type 0.
-                    case 1:
-                        // Safety check: the loop must increment
-                        int increment = Math.Max(1, typeOneIncrement);
-                        Color drawColor = proj.GetAlpha(lightColor);
-                        afterimageCount = afterimageCountOverride ?? ProjectileID.Sets.TrailCacheLength[proj.type];
-                        int i2 = afterimageCount - 1;
-                        while (i2 >= 0)
-                        {
-                            float scale = proj.scale * Lerp(1f, minScale, 1f - (afterimageCount - i2) / (float)afterimageCount);
-                            Vector2 drawPos = Vector2.Lerp(proj.oldPos[i2] + centerOffset, proj.Center, positionClumpInterpolant) - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
-                            if (i2 > 0)
-                            {
-                                float colorMult = afterimageCount - i2;
-                                drawColor *= colorMult / (afterimageCount * 1.5f);
-                            }
-                            Main.spriteBatch.Draw(texture, drawPos, new Rectangle?(rectangle), drawColor, rotation, origin, scale, spriteEffects, 0f);
-                            i2 -= increment;
-                        }
-                        break;
+                // Standard afterimages with rotation. No customizable features other than total afterimage count.
+                // Type 2 afterimages linearly scale down from 100% to 0% opacity. Their color and lighting is equal to the main projectile's.
+                case 2:
+                    afterimageCount = afterimageCountOverride ?? proj.oldPos.Length;
+                    for (int i = afterimageCount - 1; i >= 0; i--)
+                    {
+                        float afterimageRot = proj.oldRot[i];
+                        float scale = proj.scale * Lerp(1f, minScale, 1f - (afterimageCount - i) / (float)afterimageCount);
+                        SpriteEffects sfxForThisAfterimage = proj.oldSpriteDirection[i] == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                    // Standard afterimages with rotation. No customizable features other than total afterimage count.
-                    // Type 2 afterimages linearly scale down from 100% to 0% opacity. Their color and lighting is equal to the main projectile's.
-                    case 2:
-                        afterimageCount = afterimageCountOverride ?? proj.oldPos.Length;
-                        for (int i = afterimageCount - 1; i >= 0; i--)
-                        {
-                            float afterimageRot = proj.oldRot[i];
-                            float scale = proj.scale * Lerp(1f, minScale, 1f - (afterimageCount - i) / (float)afterimageCount);
-                            SpriteEffects sfxForThisAfterimage = proj.oldSpriteDirection[i] == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                        Vector2 drawPos = Vector2.Lerp(proj.oldPos[i] + centerOffset, proj.Center, positionClumpInterpolant) - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
+                        Color color = proj.GetAlpha(lightColor) * ((afterimageCount - i) / (float)afterimageCount);
+                        Main.spriteBatch.Draw(texture, drawPos, new Rectangle?(rectangle), color, afterimageRot, origin, scale, sfxForThisAfterimage, 0f);
+                    }
+                    break;
 
-                            Vector2 drawPos = Vector2.Lerp(proj.oldPos[i] + centerOffset, proj.Center, positionClumpInterpolant) - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
-                            Color color = proj.GetAlpha(lightColor) * ((afterimageCount - i) / (float)afterimageCount);
-                            Main.spriteBatch.Draw(texture, drawPos, new Rectangle?(rectangle), color, afterimageRot, origin, scale, sfxForThisAfterimage, 0f);
-                        }
-                        break;
-
-                    default:
-                        failedToDrawAfterimages = true;
-                        break;
-                }
+                default:
+                    failedToDrawAfterimages = true;
+                    break;
             }
 
             // Draw the projectile itself. Only do this if no afterimages are drawn because afterimage 0 is the projectile itself.
-            if (!afterimagesArePermitted || ProjectileID.Sets.TrailCacheLength[proj.type] <= 0 || failedToDrawAfterimages)
+            if (ProjectileID.Sets.TrailCacheLength[proj.type] <= 0 || failedToDrawAfterimages)
             {
                 Vector2 startPos = drawCentered ? proj.Center : proj.position;
                 Main.spriteBatch.Draw(texture, startPos - Main.screenPosition + new Vector2(0f, proj.gfxOffY), rectangle, proj.GetAlpha(lightColor), rotation, origin, proj.scale, spriteEffects, 0f);

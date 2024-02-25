@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     public static partial class Utilities
     {

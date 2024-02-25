@@ -5,7 +5,7 @@ using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     public static partial class Utilities
     {

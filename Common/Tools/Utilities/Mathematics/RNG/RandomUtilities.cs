@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.Utilities;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     public static partial class Utilities
     {

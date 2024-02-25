@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NoxusBoss.Core.CrossCompatibility.Inbound;
+using YouBoss.Core.CrossCompatibility.Inbound;
 using Terraria.ModLoader;
 
-namespace NoxusBoss.Common.Utilities
+namespace YouBoss.Common.Utilities
 {
     public static partial class Utilities
     {
