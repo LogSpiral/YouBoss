@@ -68,6 +68,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         } = 1f;
 
         /// <summary>
+        /// The opacity factor of the player.
+        /// </summary>
+        public float PlayerOpacityFactor
+        {
+            get;
+            set;
+        } = 1f;
+
+        /// <summary>
         /// The primitive trail responsible for drawing dash afterimages for the terra blade.
         /// </summary>
         public PrimitiveTrail DashAfterimageTrail
@@ -147,7 +156,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             appearanceShader.Apply();
 
             Texture2D target = PlayerDrawContents.GetTarget();
-            DrawData targetData = new(target, drawPosition, null, NPC.GetAlpha(lightColor), 0f, target.Size() * 0.5f, Vector2.One / Main.GameViewMatrix.Zoom, 0, 0f);
+            DrawData targetData = new(target, drawPosition, null, NPC.GetAlpha(lightColor) * PlayerOpacityFactor, 0f, target.Size() * 0.5f, Vector2.One / Main.GameViewMatrix.Zoom, 0, 0f);
             targetData.Draw(Main.spriteBatch);
 
             if (NPC.IsABestiaryIconDummy)
