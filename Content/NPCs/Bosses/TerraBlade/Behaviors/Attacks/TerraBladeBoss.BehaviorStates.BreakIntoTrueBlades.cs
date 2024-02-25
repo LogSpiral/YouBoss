@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using NoxusBoss.Content.Particles;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -101,9 +102,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Create special particles.
                 ExpandingChromaticBurstParticle burst = new(NPC.Center, Vector2.Zero, Color.Teal, 16, 0.1f);
                 burst.Spawn();
-                StrongBloom bloom = new(NPC.Center, Vector2.Zero, new(206, 255, 150), 2f, 90);
+                BloomParticle bloom = new(NPC.Center, new(206, 255, 150), 2f, 90);
                 bloom.Spawn();
-                bloom = new(NPC.Center, Vector2.Zero, Color.White, 1f, 60);
+                bloom = new(NPC.Center, Color.White, 1f, 60);
                 bloom.Spawn();
 
                 // Initialize the spin direction.

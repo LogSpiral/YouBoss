@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using YouBoss.Assets;
 using YouBoss.Common.Tools.Reflection;
-using YouBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers;
 using YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {

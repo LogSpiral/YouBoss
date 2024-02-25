@@ -2,11 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria;
-using YouBoss.Common.Gameplay.World.GameScenes.NoxusAppearances;
 using ReLogic.Content;
 using Terraria.ID;
 using Terraria.ModLoader;
-using YouBoss.Content.NPCs.Bosses.NamelessDeity.SpecificEffectManagers;
 using YouBoss.Core.Graphics.Shaders;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
@@ -66,7 +64,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
             // Draw the background.
             Texture2D background = BackgroundTexture.Value;
             Vector2 idealSize = new(Main.instance.GraphicsDevice.Viewport.Width, Main.instance.GraphicsDevice.Viewport.Height);
-            Vector2 moonPosition = NoxusRiftBackgroundSkyScene.MoonPosition;
+            Vector2 moonPosition = new(idealSize.X * 0.5f, 150f);
             Main.spriteBatch.Draw(background, Vector2.Zero, null, Color.White * Opacity * 0.5f, 0f, Vector2.Zero, idealSize / background.Size(), 0, 0f);
 
             // Make Terraria's vanilla stars disappear.

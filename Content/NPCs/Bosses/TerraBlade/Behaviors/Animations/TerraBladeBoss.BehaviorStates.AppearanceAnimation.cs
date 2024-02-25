@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using YouBoss.Common.Tools.Reflection;
 using YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles;
-using YouBoss.Core.Graphics.SpecificEffectManagers;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

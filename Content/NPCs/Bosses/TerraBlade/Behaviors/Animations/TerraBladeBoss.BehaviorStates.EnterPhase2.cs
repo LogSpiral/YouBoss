@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using YouBoss.Common.Tools.DataStructures;
 using YouBoss.Common.Tools.Reflection;
-using YouBoss.Core.Graphics.SpecificEffectManagers;
 using Terraria;
 using Terraria.ModLoader;
 
