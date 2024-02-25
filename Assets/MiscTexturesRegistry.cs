@@ -26,8 +26,9 @@ namespace YouBoss.Assets
 
         public static readonly Texture2D BloomCircleSmall = LoadDeferred($"{GreyscaleTexturesPath}/BloomCircleSmall");
 
-        // General purpose greyscale bloom flare. Very useful for semi-weak overlays.
         public static readonly Texture2D BloomFlare = LoadDeferred($"{GreyscaleTexturesPath}/BloomFlare");
+
+        public static readonly Texture2D BloomLineTexture = LoadDeferred($"{GreyscaleTexturesPath}/BloomLine");
 
         public static readonly Texture2D ChromaticBurst = LoadDeferred(ChromaticBurstPath);
 
