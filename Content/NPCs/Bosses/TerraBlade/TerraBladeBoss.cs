@@ -292,12 +292,18 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Perform a state safety check before anything else.
             PerformStateSafetyCheck();
 
-            // Grant the target infinite flight and ensure that they receive the boss effects buff.
-            if (NPC.HasPlayerTarget)
+            // Grant all players infinite flight time and good flight speed.
+            if (!PerformingStartAnimation)
             {
-                Player playerTarget = Main.player[NPC.target];
-                playerTarget.wingTime = playerTarget.wingTimeMax;
-                playerTarget.GrantInfiniteFlight();
+                for (int i = 0; i < Main.maxPlayers; i++)
+                {
+                    Player p = Main.player[i];
+                    if (!p.active || p.dead)
+                        continue;
+
+                    p.GrantInfiniteFlight();
+                    p.AddBuff(ModContent.BuffType<GracedWings>(), 2);
+                }
             }
 
             // Disable rain and sandstorms.

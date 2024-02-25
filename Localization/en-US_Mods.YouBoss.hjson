@@ -9,3 +9,10 @@ Projectiles: {
 	TerraBladeSplit.DisplayName: Terra Blade Component
 	TerraGroundShock.DisplayName: Terra Ground Shock
 }
+
+Buffs: {
+	GracedWings: {
+		DisplayName: Graced Wings
+		Description: Unending, swift flight granted
+	}
+}
