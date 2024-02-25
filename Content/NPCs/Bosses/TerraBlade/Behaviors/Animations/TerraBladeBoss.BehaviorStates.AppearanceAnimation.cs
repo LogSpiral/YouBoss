@@ -92,7 +92,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                     // Create impact effects.
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
                     StartShake(19f);
-                    ScreenEffectSystem.SetBlurEffect(NPC.Center, 1f, 18);
 
                     // Shock the ground.
                     if (Main.netMode != NetmodeID.MultiplayerClient)

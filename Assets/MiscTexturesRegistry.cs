@@ -40,6 +40,8 @@ namespace YouBoss.Assets
 
         public static readonly Texture2D DendriticNoise = LoadDeferred($"{NoiseTexturesPath}/DendriticNoise");
 
+        public static readonly Texture2D DendriticNoiseZoomedOut = LoadDeferred($"{NoiseTexturesPath}/DendriticNoiseZoomedOut");
+
         public static readonly Texture2D TurbulentNoise = LoadDeferred($"{NoiseTexturesPath}/TurbulentNoise");
 
         public static readonly Texture2D WavyBlotchNoise = LoadDeferred($"{NoiseTexturesPath}/WavyBlotchNoise");

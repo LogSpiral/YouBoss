@@ -153,9 +153,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPCID.Sets.UsesNewTargetting[Type] = true;
             NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-            // Apply miracleblight immunities.
-            NPC.MakeImmuneToMiracleblight();
-
             if (Main.netMode != NetmodeID.Server)
             {
                 // Initialize the sky.
@@ -224,7 +221,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.DeathSound = null;
             NPC.value = Item.buyPrice(2, 0, 0, 0) / 5;
             NPC.netAlways = true;
-            NPC.MakeCalamityBossBarClose();
             Music = MusicID.Boss4;
         }
 
@@ -297,7 +293,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 Player playerTarget = Main.player[NPC.target];
                 playerTarget.wingTime = playerTarget.wingTimeMax;
                 playerTarget.GrantInfiniteFlight();
-                playerTarget.GrantBossEffectsBuff();
             }
 
             // Disable rain and sandstorms.

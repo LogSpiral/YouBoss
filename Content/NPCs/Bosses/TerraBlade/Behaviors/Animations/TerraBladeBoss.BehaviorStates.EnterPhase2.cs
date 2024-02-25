@@ -3,6 +3,7 @@ using YouBoss.Common.Tools.DataStructures;
 using YouBoss.Common.Tools.Reflection;
 using Terraria;
 using Terraria.ModLoader;
+using YouBoss.Core.Graphics.SpecificEffectManagers;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -108,7 +109,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             {
                 StartShake(8f);
                 RadialScreenShoveSystem.Start(NPC.Center, 120);
-                ScreenEffectSystem.SetBlurEffect(NPC.Center, 1f, 10);
                 NPC.velocity = Vector2.Zero;
                 NPC.netUpdate = true;
             }

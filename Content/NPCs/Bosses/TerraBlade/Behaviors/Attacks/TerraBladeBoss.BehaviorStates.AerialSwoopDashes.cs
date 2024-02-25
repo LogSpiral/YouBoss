@@ -151,11 +151,8 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SlashSound);
 
-                // Make the screen blur slightly.
-                ScreenEffectSystem.SetBlurEffect(NPC.Center, 1f, 10);
-
                 // Shake the screen.
-                StartShake(6f);
+                StartShake(8f);
             }
 
             // Slice the screen momentarily after dashing.

@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using YouBoss.Core.Graphics.Shaders.Screen;
 
 namespace YouBoss.Core.Graphics.Shaders
 {
@@ -43,6 +44,9 @@ namespace YouBoss.Core.Graphics.Shaders
             Ref<Effect> s1 = new(Mod.Assets.Request<Effect>("Assets/Effects/ScreenDistortions/LinearScreenShoveShader", AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene[LinearScreenShoveShaderData.ShaderKey] = new Filter(new LinearScreenShoveShaderData(s1, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
 
+            Ref<Effect> s2 = new(Mod.Assets.Request<Effect>("Assets/Effects/ScreenDistortions/RadialScreenShoveShader", AssetRequestMode.ImmediateLoad).Value);
+            Filters.Scene[RadialScreenShoveShaderData.ShaderKey] = new Filter(new RadialScreenShoveShaderData(s2, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
+
             HasFinishedLoading = true;
         }
 
@@ -52,6 +56,7 @@ namespace YouBoss.Core.Graphics.Shaders
 
         public override void PostUpdateEverything()
         {
+            RadialScreenShoveShaderData.ToggleActivityIfNecessary();
             LinearScreenShoveShaderData.ToggleActivityIfNecessary();
         }
     }
