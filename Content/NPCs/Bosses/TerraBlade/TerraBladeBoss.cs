@@ -356,8 +356,8 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             foreach (Projectile star in fallingStars)
                 star.active = false;
 
-            // Use a full moon.
-            Main.moonPhase = 0;
+            // Use a new moon, so that the actual moon in the background can be drawn.
+            Main.moonPhase = 4;
 
             // Apparently there's no ShouldUpdatePosition hook for NPCs?
             if (!CanMove)
