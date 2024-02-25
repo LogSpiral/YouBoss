@@ -4,6 +4,9 @@ using YouBoss.Common.Tools.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 using YouBoss.Core.Graphics.SpecificEffectManagers;
+using YouBoss.Content.Particles;
+using Terraria.Audio;
+using YouBoss.Assets;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -107,7 +110,18 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Create a blur and flash effect.
             if (AITimer == EnterPhase2_HoverRedirectTime + EnterPhase2_FlashDelay)
             {
-                StartShake(8f);
+                // Create an explosion burst.
+                PerformVFXForMultiplayer(() =>
+                {
+                    ExpandingChromaticBurstParticle burst = new(NPC.Center, Vector2.Zero, Color.Lime, 16, 0.15f);
+                    burst.Spawn();
+                });
+
+                // Play sounds.
+                SoundEngine.PlaySound(TwinkleSound);
+                SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound);
+
+                StartShake(9f);
                 RadialScreenShoveSystem.Start(NPC.Center, 120);
                 NPC.velocity = Vector2.Zero;
                 NPC.netUpdate = true;
