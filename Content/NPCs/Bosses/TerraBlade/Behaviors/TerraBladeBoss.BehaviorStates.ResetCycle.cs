@@ -51,6 +51,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             rng.Add(TerraBladeAIType.EnergyBeamSpin, CalculateEnergyBeamSpinAttackWeight());
             rng.Add(TerraBladeAIType.MorphoKnightLungeSweeps, CalculateMorphoKnightLungeSweepsAttackWeight());
             rng.Add(TerraBladeAIType.DashSpin, CalculateDashSpinAttackWeight());
+            rng.Add(TerraBladeAIType.AcceleratingBeamWall, CalculateAcceleratingBeamWallAttackWeight());
 
             if (InPhase2)
             {

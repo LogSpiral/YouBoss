@@ -30,6 +30,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             MorphoKnightLungeSweeps,
             EnergyBeamSpin,
             DashSpin,
+            AcceleratingBeamWall,
 
             // Phase 2 attacks.
             TelegraphedBeamDashes,
