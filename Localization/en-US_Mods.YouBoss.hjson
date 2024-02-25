@@ -1,1 +1,11 @@
-# This file will automatically update with entries for new content after a build and reload
+NPCs.TerraBladeBoss.DisplayName: Terra Blade
+
+Projectiles: {
+	AcceleratingTerraBeam.DisplayName: Terra Beam
+	ArcingLightBeam.DisplayName: Light Beam
+	ArcingNightBeam.DisplayName: Night Beam
+	ArcingTerraBeam.DisplayName: Terra Beam
+	TelegraphedTerraBeam.DisplayName: Terra Beam
+	TerraBladeSplit.DisplayName: Terra Blade Component
+	TerraGroundShock.DisplayName: Terra Ground Shock
+}

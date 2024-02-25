@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using YouBoss.Content.NPCs.Bosses.Noxus.FirstPhaseForm;
 using YouBoss.Core.Graphics.Primitives;
 using YouBoss.Core.Graphics.Shaders;
 using ReLogic.Content;
@@ -117,7 +116,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             if (Main.netMode == NetmodeID.Server)
                 return;
 
-            ShineTexture = ModContent.Request<Texture2D>("NoxusBoss/Content/NPCs/Bosses/TerraBlade/TerraBladeShine");
+            ShineTexture = ModContent.Request<Texture2D>("YouBoss/Content/NPCs/Bosses/TerraBlade/TerraBladeShine");
         }
 
         public void DrawAntiHero(Vector2 drawOffset, Color lightColor)

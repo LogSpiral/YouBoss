@@ -15,7 +15,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
 
         public ref float Time => ref Projectile.ai[1];
 
-        public override string Texture => "NoxusBoss/Content/NPCs/Bosses/TerraBlade/Projectiles/TerraBeam";
+        public override string Texture => "YouBoss/Content/NPCs/Bosses/TerraBlade/Projectiles/TerraBeam";
 
         public override void SetStaticDefaults()
         {

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using YouBoss.Core.Graphics.ParticleMangers;
 using Terraria;
 
-namespace NoxusBoss.Content.Particles
+namespace YouBoss.Content.Particles
 {
     public class BloomParticle : Particle
     {

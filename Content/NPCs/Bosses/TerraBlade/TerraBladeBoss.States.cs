@@ -28,7 +28,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
         public void PerformStateSafetyCheck()
         {
-            // Add the relevant phase cycle if it has been exhausted, to ensure that Noxus' attacks are cyclic.
+            // Add the relevant phase cycle if it has been exhausted.
             if ((StateMachine?.StateStack?.Count ?? 1) <= 0 || !StateMachine.StateStack.Any())
                 StateMachine.StateStack.Push(StateMachine.StateRegistry[TerraBladeAIType.ResetCycle]);
         }

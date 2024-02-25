@@ -36,7 +36,7 @@ namespace YouBoss.Content.Particles
             GlowColor = glowColor;
 
             if (Main.netMode != NetmodeID.Server)
-                GlowTexture ??= ModContent.Request<Texture2D>("NoxusBoss/Content/Particles/MetalSparkParticleGlow", AssetRequestMode.ImmediateLoad).Value;
+                GlowTexture ??= ModContent.Request<Texture2D>("YouBoss/Content/Particles/MetalSparkParticleGlow", AssetRequestMode.ImmediateLoad).Value;
         }
 
         public override void Update()

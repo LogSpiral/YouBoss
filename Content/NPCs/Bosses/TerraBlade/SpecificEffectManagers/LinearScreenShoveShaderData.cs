@@ -12,7 +12,7 @@ namespace YouBoss.Core.Graphics.Shaders.Screen
 {
     public class LinearScreenShoveShaderData : ScreenShaderData
     {
-        public const string ShaderKey = "NoxusBoss:LinearScreenShoveShader";
+        public const string ShaderKey = "YouBoss:LinearScreenShoveShader";
 
         public LinearScreenShoveShaderData(string passName)
             : base(passName)

@@ -65,9 +65,9 @@ namespace YouBoss.Core.Graphics.ParticleMangers
             get
             {
                 string defaultTexturePath = GetType().FullName.Replace('.', '/');
-                string assetPath = assetPath = defaultTexturePath.Replace($"{nameof(NoxusBoss)}/", string.Empty).Replace(@"/", @"\");
+                string assetPath = assetPath = defaultTexturePath.Replace($"{nameof(YouBoss)}/", string.Empty).Replace(@"/", @"\");
                 if (!YouBoss.Instance.HasAsset(assetPath))
-                    throw new MissingResourceException($"A Wrath of the Gods Mod defined particle of the type '{GetType().Name}' could not locate a default texture path.");
+                    throw new MissingResourceException($"A You Boss Mod defined particle of the type '{GetType().Name}' could not locate a default texture path.");
 
                 return defaultTexturePath;
             }

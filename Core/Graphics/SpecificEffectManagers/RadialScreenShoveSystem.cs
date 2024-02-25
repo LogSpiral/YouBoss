@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using YouBoss.Core.Graphics.Shaders.Screen;
 
 namespace YouBoss.Core.Graphics.SpecificEffectManagers
 {
@@ -10,7 +11,7 @@ namespace YouBoss.Core.Graphics.SpecificEffectManagers
 
         public override void SpecialVisuals(Player player, bool isActive)
         {
-            player.ManageSpecialBiomeVisuals("NoxusBoss:LightWaveScreenShove", isActive);
+            player.ManageSpecialBiomeVisuals(RadialScreenShoveShaderData.ShaderKey, isActive);
         }
     }
 

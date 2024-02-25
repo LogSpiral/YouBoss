@@ -22,15 +22,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
         /// <summary>
         /// The identifier key for this sky.
         /// </summary>
-        public const string SkyKey = "NoxusBoss:TerraBlade";
+        public const string SkyKey = "YouBoss:TerraBlade";
 
         public override void OnLoad()
         {
             if (Main.netMode == NetmodeID.Server)
                 return;
 
-            BackgroundTexture = ModContent.Request<Texture2D>("NoxusBoss/Content/NPCs/Bosses/TerraBlade/SpecificEffectManagers/Sky/Background");
-            MoonTexture = ModContent.Request<Texture2D>("NoxusBoss/Content/NPCs/Bosses/TerraBlade/SpecificEffectManagers/Sky/Moon");
+            BackgroundTexture = ModContent.Request<Texture2D>("YouBoss/Content/NPCs/Bosses/TerraBlade/SpecificEffectManagers/Sky/Background");
+            MoonTexture = ModContent.Request<Texture2D>("YouBoss/Content/NPCs/Bosses/TerraBlade/SpecificEffectManagers/Sky/Moon");
         }
 
         public override void Deactivate(params object[] args)

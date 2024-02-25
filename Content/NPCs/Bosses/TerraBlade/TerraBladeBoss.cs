@@ -78,7 +78,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         }
 
         /// <summary>
-        /// How many frames it's been since Noxus' fight began.
+        /// How many frames it's been since the fight began.
         /// </summary>
         public int FightDuration
         {
@@ -87,19 +87,19 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         }
 
         /// <summary>
-        /// Noxus' life to max life ratio.
+        /// The terra blade's life to max life ratio.
         /// </summary>
         public float LifeRatio => NPC.life / (float)NPC.lifeMax;
 
         /// <summary>
-        /// Noxus' target.
+        /// The terra blade's target.
         /// </summary>
         public NPCAimedTarget Target => NPC.GetTargetData();
 
         public Vector2 BladeTip => NPC.Center + NPC.rotation.ToRotationVector2() * NPC.scale * 42f;
 
         /// <summary>
-        /// The AI timer for Noxus' current state.
+        /// The AI timer for the terra blade's current state.
         /// </summary>
         /// <remarks>
         /// Notably, <i>AI timers are local to a given state</i>.
@@ -107,7 +107,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         public ref int AITimer => ref StateMachine.CurrentState.Time;
 
         /// <summary>
-        /// The current AI state Noxus is using. This uses the <see cref="StateMachine"/> under the hood.
+        /// The current AI state the terra blade is performing. This uses the <see cref="StateMachine"/> under the hood.
         /// </summary>
         public TerraBladeAIType CurrentState
         {
@@ -119,7 +119,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         }
 
         /// <summary>
-        /// Noxus' <see cref="NPC"/> instance. Returns <see langword="null"/> if Noxus is not present.
+        /// The terra blade's <see cref="NPC"/> instance. Returns <see langword="null"/> if the terra blade is not present.
         /// </summary>
         public static NPC Myself
         {
