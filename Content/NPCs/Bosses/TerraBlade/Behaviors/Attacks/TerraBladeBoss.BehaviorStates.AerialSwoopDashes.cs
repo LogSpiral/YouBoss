@@ -40,6 +40,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         public static int AerialSwoopDashes_DashTime => SecondsToFrames(0.2167f);
 
         /// <summary>
+        /// How long the terra blade waits before transitioning to the next attack during the aerial swoop dashes attack.
+        /// </summary>
+        public static int AerialSwoopDashes_AttackTransitionDelay => SecondsToFrames(0.75f);
+
+        /// <summary>
         /// The amount of dashes the perform during the aerial swoop dashes attack.
         /// </summary>
         public static int AerialSwoopDashes_DashCount => 5;
@@ -49,7 +54,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         {
             StateMachine.RegisterTransition(TerraBladeAIType.AerialSwoopDashes, null, false, () =>
             {
-                return AerialSwoopDashes_DashCounter >= AerialSwoopDashes_DashCount;
+                return AerialSwoopDashes_DashCounter >= AerialSwoopDashes_DashCount && AITimer >= AerialSwoopDashes_AttackTransitionDelay;
             });
 
             // Load the AI state behavior.
@@ -69,6 +74,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             float swoopSpeed = 62f;
             float horizontalSpeed = 110f;
             float verticalSwoopHeight = 320f;
+            bool doneAttacking = AerialSwoopDashes_DashCounter >= AerialSwoopDashes_DashCount;
+
+            if (doneAttacking)
+            {
+                NPC.velocity *= 0.85f;
+                NPC.spriteDirection = 1;
+                NPC.rotation = NPC.rotation.AngleLerp(NPC.AngleTo(Target.Center), 0.25f);
+                return;
+            }
 
             // Hover into position for the dash.
             if (AITimer <= hoverRedirectTime)
