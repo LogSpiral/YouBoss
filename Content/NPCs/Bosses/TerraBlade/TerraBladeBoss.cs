@@ -164,6 +164,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 Main.ContentThatNeedsRenderTargets.Add(PlayerDrawContents);
             }
 
+            // Change the terra blade's hitbox.
+            On_NPC.GetMeleeCollisionData += ExpandEffectiveHitboxForHands;
+
             // Load textures.
             LoadTextures();
 
@@ -389,5 +392,42 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         }
 
         #endregion AI
+
+        #region Collision
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            // This is quite scuffed, but since there's no equivalent easy Colliding hook for NPCs, it is necessary to increase the terra blade's "effective hitbox" to an extreme
+            // size via a detour and then use the CanHitPlayer hook to selectively choose whether the target should be inflicted damage or not (in this case, based on hands that can do damage).
+            // This is because NPC collisions are fundamentally based on rectangle intersections. CanHitPlayer does not allow for the negation of that. But by increasing the hitbox by such an
+            // extreme amount that that check is always passed, this issue is mitigated by simply carving out condition-based collisions out of a ginormous rectangle.
+            // Again, scuffed, but the onus is on TML to make this easier for modders to do.
+            Rectangle targetHitbox = target.Hitbox;
+            bool standardHitPerformed = NPC.Hitbox.Intersects(targetHitbox);
+
+            // Expand the hitbox a bit if going REALLY fast.
+            if (NPC.velocity.Length() >= 50f)
+            {
+                float _ = 0f;
+                Vector2 extendedHitStart = NPC.Center;
+                Vector2 extendedHitEnd = extendedHitStart - NPC.velocity * 1.05f;
+                bool extendedHitPerformed = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), extendedHitStart, extendedHitEnd, NPC.width * 0.5f, ref _);
+                if (extendedHitPerformed)
+                    return true;
+            }
+
+            return standardHitPerformed;
+        }
+
+        private void ExpandEffectiveHitboxForHands(On_NPC.orig_GetMeleeCollisionData orig, Rectangle victimHitbox, int enemyIndex, ref int specialHitSetter, ref float damageMultiplier, ref Rectangle npcRect)
+        {
+            orig(victimHitbox, enemyIndex, ref specialHitSetter, ref damageMultiplier, ref npcRect);
+
+            // See the big comment in CanHitPlayer.
+            if (Main.npc[enemyIndex].type == Type)
+                npcRect.Inflate(4000, 4000);
+        }
+
+        #endregion Collision
     }
 }
