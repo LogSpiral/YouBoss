@@ -10,6 +10,8 @@ namespace YouBoss.Assets
     {
         #region Texture Path Constants
 
+        public const string PixelPath = $"{ExtraTexturesPath}/Pixel";
+
         public const string InvisiblePixelPath = $"{ExtraTexturesPath}/InvisiblePixel";
 
         public const string ExtraTexturesPath = "YouBoss/Assets/ExtraTextures";
@@ -48,12 +50,15 @@ namespace YouBoss.Assets
 
         #endregion Noise Textures
 
-        #region Invisible Pixel
+        #region Pixel
 
         // Self-explanatory. Sometimes shaders need a "blank slate" in the form of an invisible texture to draw their true contents onto, which this can be beneficial for.
         public static readonly Texture2D InvisiblePixel = LoadDeferred(InvisiblePixelPath);
 
-        #endregion Invisible Pixel
+        // Self-explanatory.
+        public static readonly Texture2D Pixel = LoadDeferred(PixelPath);
+
+        #endregion Pixel
 
         #region Loader Utility
 

@@ -73,7 +73,10 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
 
             // Draw an assortment of custom stars.
             ulong starSeed = 1493uL;
-            float starCountFractional = TerraBladeBoss.Myself.As<TerraBladeBoss>().ExtraStarsInSkyCount + 60f;
+            float starCountFractional = 60f;
+            if (TerraBladeBoss.Myself is not null)
+                starCountFractional += TerraBladeBoss.Myself.As<TerraBladeBoss>().ExtraStarsInSkyCount;
+
             float strengthOfLastStar = starCountFractional % 1f;
             int starCount = (int)Ceiling(starCountFractional);
             for (int i = 0; i < starCount; i++)
