@@ -149,7 +149,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             Texture2D target = PlayerDrawContents.GetTarget();
             DrawData targetData = new(target, drawPosition, null, NPC.GetAlpha(lightColor), 0f, target.Size() * 0.5f, Vector2.One / Main.GameViewMatrix.Zoom, 0, 0f);
             targetData.Draw(Main.spriteBatch);
-            Main.spriteBatch.ResetToDefault();
+
+            if (NPC.IsABestiaryIconDummy)
+                Main.spriteBatch.ResetToDefaultUI();
+            else
+                Main.spriteBatch.ResetToDefault();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
