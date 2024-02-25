@@ -8,6 +8,7 @@ using Terraria.GameContent.Events;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -198,7 +199,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.width = 46;
             NPC.height = 46;
             NPC.defense = 50;
-            NPC.SetLifeMaxByMode(900000, 1000000, 1123200);
+            NPC.SetLifeMaxByMode(408000, 450000, 542750);
 
             if (Main.expertMode)
             {
@@ -358,6 +359,17 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Apparently there's no ShouldUpdatePosition hook for NPCs?
             if (!CanMove)
                 NPC.Center -= NPC.velocity;
+        }
+
+        /// <summary>
+        /// Performs a client-side visual effect in a way that's multiplayer friendly.
+        /// </summary>
+        /// <param name="vfxAction">The visual effect to perform.</param>
+        public void PerformVFXForMultiplayer(Action vfxAction)
+        {
+            NPC.position += NPC.netOffset;
+            vfxAction();
+            NPC.position -= NPC.netOffset;
         }
 
         /// <summary>

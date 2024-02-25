@@ -84,10 +84,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Apply ground hit effects when ready.
                 if (!AppearanceAnimation_HasHitGround && Collision.SolidCollision(NPC.TopLeft, NPC.width, NPC.height, true))
                 {
+                    // Become lodged into the ground.
                     NPC.velocity.Y = 0f;
                     while (Collision.SolidCollision(NPC.TopLeft, NPC.width, NPC.height - 6, true))
                         NPC.position.Y -= 2f;
-                    NPC.position.Y += 12f;
+                    NPC.position.Y += 11f;
 
                     // Create impact effects.
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
@@ -95,10 +96,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
                     // Shock the ground.
                     if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
                         NewProjectileBetter(BladeTip, Vector2.Zero, ModContent.ProjectileType<TerraGroundShock>(), 0, 0f);
-
-                    AppearanceAnimation_HasHitGround = true;
-                    NPC.netUpdate = true;
+                        AppearanceAnimation_HasHitGround = true;
+                        NPC.netUpdate = true;
+                    }
                 }
             }
         }

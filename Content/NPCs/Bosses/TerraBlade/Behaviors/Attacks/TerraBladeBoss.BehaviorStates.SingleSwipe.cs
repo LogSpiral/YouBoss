@@ -90,7 +90,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Calculate the swipe angle.
                 Vector2 desiredDirection = Target.Center.DirectionTo(SingleSwipe_SwipeDestination);
                 SingleSwipe_ArcAngle = startingDirection.AngleBetween(desiredDirection);
-                
+
                 // Immediately reset all prior moment.
                 NPC.velocity = Vector2.Zero;
                 NPC.netUpdate = true;
@@ -119,12 +119,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 NPC.position -= NPC.velocity;
 
                 // Release a bunch of sparkle particles.
-                ParticleOrchestraSettings particleSettings = new()
+                PerformVFXForMultiplayer(() =>
                 {
-                    PositionInWorld = NPC.Center,
-                    MovementVector = NPC.velocity * 0.06f + Main.rand.NextVector2Circular(5f, 5f)
-                };
-                ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.TerraBlade, particleSettings);
+                    ParticleOrchestraSettings particleSettings = new()
+                    {
+                        PositionInWorld = NPC.Center,
+                        MovementVector = NPC.velocity * 0.06f + Main.rand.NextVector2Circular(5f, 5f)
+                    };
+                    ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.TerraBlade, particleSettings);
+                });
 
                 // Rotate forward.
                 NPC.rotation = NPC.AngleFrom(SingleSwipe_SwipeDestination);

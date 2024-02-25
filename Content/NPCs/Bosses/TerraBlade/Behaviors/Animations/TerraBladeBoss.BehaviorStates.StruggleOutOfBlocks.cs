@@ -73,7 +73,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             // Create dust in the blocks as an indication of the struggle.
             if (Abs(StruggleOutOfBlocks_StruggleDirection) >= 0.25f)
-                Collision.HitTiles(NPC.Bottom, -Vector2.UnitY.RotatedByRandom(0.6f) * 15f, 16, 16);
+            {
+                PerformVFXForMultiplayer(() =>
+                {
+                    Collision.HitTiles(NPC.Bottom, -Vector2.UnitY.RotatedByRandom(0.6f) * 15f, 16, 16);
+                });
+            }
 
             // Randomly struggle in some direction to escape the blocks.
             if (AITimer % 38 == 0 && stuck)

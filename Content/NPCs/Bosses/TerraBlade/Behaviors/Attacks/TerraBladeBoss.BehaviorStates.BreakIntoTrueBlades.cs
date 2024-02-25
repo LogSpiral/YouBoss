@@ -97,15 +97,20 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
                 // Shake the screen.
                 StartShake(11f);
-                RadialScreenShoveSystem.Start(NPC.Center, 60);
 
-                // Create special particles.
-                ExpandingChromaticBurstParticle burst = new(NPC.Center, Vector2.Zero, Color.Teal, 16, 0.1f);
-                burst.Spawn();
-                BloomParticle bloom = new(NPC.Center, new(206, 255, 150), 2f, 90);
-                bloom.Spawn();
-                bloom = new(NPC.Center, Color.White, 1f, 60);
-                bloom.Spawn();
+                // Create visual effects.
+                PerformVFXForMultiplayer(() =>
+                {
+                    RadialScreenShoveSystem.Start(NPC.Center, 60);
+
+                    // Create special particles.
+                    ExpandingChromaticBurstParticle burst = new(NPC.Center, Vector2.Zero, Color.Teal, 16, 0.1f);
+                    burst.Spawn();
+                    BloomParticle bloom = new(NPC.Center, new(206, 255, 150), 2f, 90);
+                    bloom.Spawn();
+                    bloom = new(NPC.Center, Color.White, 1f, 60);
+                    bloom.Spawn();
+                });
 
                 // Initialize the spin direction.
                 BreakIntoTrueBlades_BladeOffsetDirection = Main.rand.NextFloat(TwoPi);
@@ -205,15 +210,18 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 flare.Spawn();
 
                 // Release sparks of metal.
-                for (int i = 0; i < 75; i++)
+                PerformVFXForMultiplayer(() =>
                 {
-                    float metalLength = Main.rand.NextFloat(0.75f, 1f);
-                    Color metalColor = Color.Lerp(Color.Yellow, Color.Teal, Main.rand.NextFloat());
-                    metalColor = Color.Lerp(metalColor, Color.Silver, 0.6f);
-                    Vector2 metalVelocity = Main.rand.NextVector2Circular(30f, 25f) - Vector2.UnitY * 10f;
-                    MetalSparkParticle metal = new(NPC.Center, metalVelocity, metalVelocity.Length() <= 11f, Main.rand.Next(12, 19), new Vector2(0.285f, metalLength) * 0.4f, 1f, metalColor, Color.Silver);
-                    metal.Spawn();
-                }
+                    for (int i = 0; i < 75; i++)
+                    {
+                        float metalLength = Main.rand.NextFloat(0.75f, 1f);
+                        Color metalColor = Color.Lerp(Color.Yellow, Color.Teal, Main.rand.NextFloat());
+                        metalColor = Color.Lerp(metalColor, Color.Silver, 0.6f);
+                        Vector2 metalVelocity = Main.rand.NextVector2Circular(30f, 25f) - Vector2.UnitY * 10f;
+                        MetalSparkParticle metal = new(NPC.Center, metalVelocity, metalVelocity.Length() <= 11f, Main.rand.Next(12, 19), new Vector2(0.285f, metalLength) * 0.4f, 1f, metalColor, Color.Silver);
+                        metal.Spawn();
+                    }
+                });
 
                 // Play an impact sound.
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.BladeReformExplosionSound, NPC.Center);
@@ -233,10 +241,10 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                         if (InPhase3)
                             NewProjectileBetter(NPC.Center, lightBladeVelocity * 0.2f, ModContent.ProjectileType<ArcingNightBeam>(), TerraBeamDamage, 0f, -1, -bladeArcSpeed, -5f);
                     }
-                }
 
-                NPC.Opacity = 1f;
-                NPC.netUpdate = true;
+                    NPC.Opacity = 1f;
+                    NPC.netUpdate = true;
+                }
             }
 
             // Look away from the player after reforming.

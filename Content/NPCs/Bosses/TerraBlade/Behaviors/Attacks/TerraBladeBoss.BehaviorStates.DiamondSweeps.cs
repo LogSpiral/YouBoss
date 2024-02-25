@@ -83,12 +83,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Release a bunch of sparkle particles.
             if (canReleaseBeams)
             {
-                ParticleOrchestraSettings particleSettings = new()
+                PerformVFXForMultiplayer(() =>
                 {
-                    PositionInWorld = NPC.Center + NPC.rotation.ToRotationVector2() * 104f,
-                    MovementVector = (NPC.rotation + PiOver2).ToRotationVector2() * 7.5f + Main.rand.NextVector2Circular(6f, 6f)
-                };
-                ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.TerraBlade, particleSettings);
+                    ParticleOrchestraSettings particleSettings = new()
+                    {
+                        PositionInWorld = NPC.Center + NPC.rotation.ToRotationVector2() * 104f,
+                        MovementVector = (NPC.rotation + PiOver2).ToRotationVector2() * 7.5f + Main.rand.NextVector2Circular(6f, 6f)
+                    };
+                    ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.TerraBlade, particleSettings);
+                });
             }
 
             // Spin around the target.

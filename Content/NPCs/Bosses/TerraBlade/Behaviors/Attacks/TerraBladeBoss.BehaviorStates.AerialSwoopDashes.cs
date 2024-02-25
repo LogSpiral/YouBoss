@@ -159,9 +159,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             if (AITimer == hoverRedirectTime + dashWaitTime + 8)
             {
                 // Slice the screen.
-                LinearScreenShoveSystem.CreateNew(15, NPC.Center, (NPC.velocity * new Vector2(1f, 0.6f)).SafeNormalize(Vector2.Zero), completionRatio =>
+                PerformVFXForMultiplayer(() =>
                 {
-                    return InverseLerp(0f, 0.05f, completionRatio) * InverseLerp(0.95f, 0.6f, completionRatio) * 16f;
+                    LinearScreenShoveSystem.CreateNew(15, NPC.Center, (NPC.velocity * new Vector2(1f, 0.6f)).SafeNormalize(Vector2.Zero), completionRatio =>
+                    {
+                        return InverseLerp(0f, 0.05f, completionRatio) * InverseLerp(0.95f, 0.6f, completionRatio) * 16f;
+                    });
                 });
             }
 

@@ -131,9 +131,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 NPC.netUpdate = true;
 
                 // Slice the screen.
-                LinearScreenShoveSystem.CreateNew(24, NPC.Center, NPC.velocity.SafeNormalize(Vector2.UnitY), completionRatio =>
+                PerformVFXForMultiplayer(() =>
                 {
-                    return InverseLerp(0f, 0.15f, completionRatio) * InverseLerp(0.95f, 0.6f, completionRatio) * 18f;
+                    LinearScreenShoveSystem.CreateNew(24, NPC.Center, NPC.velocity.SafeNormalize(Vector2.UnitY), completionRatio =>
+                    {
+                        return InverseLerp(0f, 0.15f, completionRatio) * InverseLerp(0.95f, 0.6f, completionRatio) * 18f;
+                    });
                 });
 
                 // Release telegraphed beams.

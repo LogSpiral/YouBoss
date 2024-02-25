@@ -153,12 +153,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 NPC.velocity = forwardForce;
 
                 // Release a bunch of sparkle particles.
-                ParticleOrchestraSettings particleSettings = new()
+                PerformVFXForMultiplayer(() =>
                 {
-                    PositionInWorld = NPC.Center + (originalCenter - NPC.Center).SafeNormalize(Vector2.Zero) * 104f,
-                    MovementVector = (NPC.Center - originalCenter) * 0.06f + Main.rand.NextVector2Circular(6f, 6f)
-                };
-                ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.TerraBlade, particleSettings);
+                    ParticleOrchestraSettings particleSettings = new()
+                    {
+                        PositionInWorld = NPC.Center + (originalCenter - NPC.Center).SafeNormalize(Vector2.Zero) * 104f,
+                        MovementVector = (NPC.Center - originalCenter) * 0.06f + Main.rand.NextVector2Circular(6f, 6f)
+                    };
+                    ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.TerraBlade, particleSettings);
+                });
 
                 // Release terra beams.
                 if (Main.netMode != NetmodeID.MultiplayerClient && swingTimer >= 1)
