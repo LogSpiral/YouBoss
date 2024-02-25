@@ -15,12 +15,17 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// The max speed boost that beams should have during the accelerating beam wall attack.
         /// </summary>
-        public float AcceleratingBeamWall_WallMaxSpeedBoost => ByPhase(12f, 15f, 22f);
+        public float AcceleratingBeamWall_WallMaxSpeedBoost => ByPhase(12f, 14.5f, 17f);
 
         /// <summary>
         /// The acceleration boost that beams should have during the accelerating beam wall attack.
         /// </summary>
-        public float AcceleratingBeamWall_WallAccelerationBoost => ByPhase(0.6f, 0.74f, 0.85f);
+        public float AcceleratingBeamWall_WallAccelerationBoost => ByPhase(0.6f, 0.73f, 0.8f);
+
+        /// <summary>
+        /// The horizontal hover offset used during the accelerating beam wall attack.
+        /// </summary>
+        public ref float AcceleratingBeamWall_HorizontalHoverOffset => ref NPC.ai[0];
 
         /// <summary>
         /// How long the terra blade should spend redirecting during the the accelerating beam wall attack.
@@ -30,7 +35,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade should wait before slashing during the the accelerating beam wall attack.
         /// </summary>
-        public static int AcceleratingBeamWall_SlashDelay => SecondsToFrames(0.16f);
+        public static int AcceleratingBeamWall_SlashDelay => SecondsToFrames(0.33f);
 
         /// <summary>
         /// How long the terra blade should spend slashing during the the accelerating beam wall attack.
@@ -67,9 +72,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Store the forward direction.
                 NPC.direction = (Target.Center.X - NPC.Center.X).NonZeroSign();
 
+                if (AcceleratingBeamWall_HorizontalHoverOffset == 0f)
+                    AcceleratingBeamWall_HorizontalHoverOffset = Target.Velocity.X.NonZeroSign() * -700f;
+
                 // Perform hover movement.
-                float hoverRedirectSpeed = InverseLerp(0f, AcceleratingBeamWall_HoverRedirectTime * 0.8f, AITimer).Cubed() * 0.9f;
-                Vector2 hoverDestination = Target.Center + new Vector2(NPC.direction * -696f, 350f) + Target.Velocity * new Vector2(14f, 30f);
+                float hoverRedirectSpeed = InverseLerp(0f, AcceleratingBeamWall_HoverRedirectTime * 0.8f, AITimer).Squared() * 0.95f;
+                Vector2 hoverDestination = Target.Center + new Vector2(AcceleratingBeamWall_HorizontalHoverOffset, 350f) + Target.Velocity * new Vector2(14f, -4f);
                 NPC.SmoothFlyNear(hoverDestination, hoverRedirectSpeed, 0.32f);
 
                 // Point the terra blade at the target.
@@ -110,7 +118,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                     // Play sounds.
                     SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SlashSound);
 
-                    NPC.velocity = Vector2.UnitX * NPC.direction * 70f;
+                    NPC.velocity = Vector2.UnitX * NPC.direction * 56f;
                     NPC.netUpdate = true;
                 }
 

@@ -33,8 +33,8 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
                     // Choose an attack pattern to use.
                     TerraBladeAIType[] attackPattern = ChooseNextAttackPattern();
-                    PreviousTwoStates[^1] = attackPattern[^1];
                     PreviousTwoStates[^2] = PreviousTwoStates[^1];
+                    PreviousTwoStates[^1] = attackPattern[^1];
 
                     // Supply the state stack with the attack pattern.
                     for (int i = attackPattern.Length - 1; i >= 0; i--)

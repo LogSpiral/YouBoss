@@ -35,7 +35,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade spends hover redirecting during the telegraphed beam dashes attack.
         /// </summary>
-        public int TelegraphedBeamDashes_HoverRedirectTime => SecondsToFrames(TelegraphedBeamDashes_DashCounter <= 0f ? 0.63f : 0.3167f);
+        public int TelegraphedBeamDashes_HoverRedirectTime => SecondsToFrames((TelegraphedBeamDashes_DashCounter <= 0f || TelegraphedBeamDashes_DashCounter >= TelegraphedBeamDashes_DashCount) ? 0.63f : 0.3167f);
 
         /// <summary>
         /// How long the terra blade spends reeling back during the telegraphed beam dashes attack.
