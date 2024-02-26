@@ -66,7 +66,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             PlayerAppearanceInterpolant = Saturate(PlayerAppearanceInterpolant + 0.033f);
 
             // Shine.
-            float pointAtTargetInterpolant = InverseLerp(0f, 40f, AITimer).Squared();
+            float pointAtTargetInterpolant = InverseLerp(0f, 10f, AITimer).Squared();
             ShineInterpolant = Clamp(ShineInterpolant + pointAtTargetInterpolant * 0.029f, 0f, 1f);
 
             if (AITimer == 32)
@@ -77,7 +77,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             CameraPanSystem.CameraFocusPoint = NPC.Center;
 
             // Look at the target before swiping in anticipation.
-            float idealAngle = NPC.AngleTo(Target.Center).AngleLerp(NPC.AngleFrom(Target.Center) + 0.05f, ShineInterpolant);
+            float idealAngle = NPC.AngleTo(Target.Center).AngleLerp(NPC.AngleFrom(Target.Center) + 0.05f, ShineInterpolant * 0.6f + 0.4f);
             NPC.rotation = NPC.rotation.AngleLerp(idealAngle, pointAtTargetInterpolant * 0.07f).AngleTowards(idealAngle, pointAtTargetInterpolant * 0.09f);
 
             // Reel back.
