@@ -54,7 +54,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade waits before exploding after the twinkle during the terra blade's death animation..
         /// </summary>
-        public static int DeathAnimation_BurstDelay => SecondsToFrames(0.333f);
+        public static int DeathAnimation_BurstDelay => SecondsToFrames(0.94f);
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_DeathAnimation()
