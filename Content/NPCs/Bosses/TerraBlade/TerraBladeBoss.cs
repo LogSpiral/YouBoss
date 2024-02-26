@@ -203,7 +203,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.damage = 230;
             NPC.width = 46;
             NPC.height = 46;
-            NPC.defense = 50;
+            NPC.defense = 35;
             NPC.SetLifeMaxByMode(408000, 450000, 542750);
 
             if (Main.expertMode)
@@ -227,7 +227,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.DeathSound = null;
             NPC.value = Item.buyPrice(2, 0, 0, 0) / 5;
             NPC.netAlways = true;
-            Music = MusicID.Boss4;
+            Music = MusicID.OtherworldlyBoss2;
         }
 
         #endregion Initialization
