@@ -318,6 +318,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             Myself = NPC;
 
             // Reset things every frame.
+            Music = MusicID.OtherworldlyBoss2;
             PlayerDrawOffsetFactor = Saturate(PlayerDrawOffsetFactor + 0.06f);
             OriginOffset *= 0.95f;
             CanMove = true;
@@ -340,6 +341,8 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Use the target's name if not in the starting animation.
             if (!PerformingStartAnimation)
                 NPC.GivenName = Main.LocalPlayer.name;
+            else
+                Music = 0;
 
             // Update the state machine.
             StateMachine.PerformStateTransitionCheck();
