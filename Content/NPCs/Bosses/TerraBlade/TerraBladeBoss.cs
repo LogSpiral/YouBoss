@@ -23,6 +23,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             ThreateninglyAimAtTarget,
             EnterPhase2,
             EnterPhase3,
+            DeathAnimation,
 
             // Phase 1 Attacks.
             SingleSwipe,
@@ -241,6 +242,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 [0] = CanMove,
                 [1] = PerformingStartAnimation,
                 [2] = Phase2,
+                [3] = WaitingForDeathAnimation
             };
             writer.Write(b1);
 
@@ -261,6 +263,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             CanMove = b1[0];
             PerformingStartAnimation = b1[1];
             Phase2 = b1[2];
+            WaitingForDeathAnimation = b1[3];
 
             // Read float data.
             NPC.Opacity = reader.ReadSingle();

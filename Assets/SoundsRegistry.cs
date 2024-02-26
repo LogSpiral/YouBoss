@@ -36,6 +36,11 @@ namespace YouBoss.Assets
             public static readonly SoundStyle DashSound = new("YouBoss/Assets/Sounds/Custom/TerraBlade/Dash");
 
             /// <summary>
+            /// The sound the blade makes when the player disappears.
+            /// </summary>
+            public static readonly SoundStyle PlayerDisappearSound = new("YouBoss/Assets/Sounds/Custom/TerraBlade/PlayerDisappear");
+
+            /// <summary>
             /// The sound the blade makes when splitting into its three components.
             /// </summary>
             public static readonly SoundStyle SplitSound = new("YouBoss/Assets/Sounds/Custom/TerraBlade/Split");
