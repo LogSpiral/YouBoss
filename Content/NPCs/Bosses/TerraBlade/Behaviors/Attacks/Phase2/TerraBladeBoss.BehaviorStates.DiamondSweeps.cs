@@ -74,6 +74,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound, NPC.Center);
                 NPC.oldPos = new Vector2[NPC.oldPos.Length];
                 NPC.soundDelay = 8;
+                NPC.netUpdate = true;
             }
 
             // Release beams.

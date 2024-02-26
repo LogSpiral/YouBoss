@@ -55,6 +55,10 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.velocity = Vector2.Clamp(NPC.velocity + NPC.DirectionToSafe(Target.Center) * DashSpeed_FlyAcceleration, -Vector2.One * dashSpeed, Vector2.One * dashSpeed);
             PlayerDrawOffsetFactor = InverseLerp(12f, 0f, AITimer);
 
+            // Periodically sync things.
+            if (AITimer % 45 == 44)
+                NPC.netUpdate = true;
+
             // Spin in place.
             NPC.rotation += TwoPi * NPC.velocity.X / 300f;
             ShineInterpolant = InverseLerp(0f, 15f, AITimer);

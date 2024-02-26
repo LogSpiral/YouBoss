@@ -9,6 +9,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
+using System.Linq;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -251,9 +252,22 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             writer.Write(NPC.rotation);
             writer.Write(ExtraStarsInSkyCount);
 
-            // Send vector data.
+            // Write vector data.
             writer.WriteVector2(MorphoKnightLungeSweeps_SlashDirection);
             writer.WriteVector2(SingleSwipe_SwipeDestination);
+
+            // Write state data.
+            writer.Write(StateMachine?.StateStack.Count ?? 0);
+            foreach (var state in StateMachine.StateStack.Reverse())
+            {
+                writer.Write((int)state.Identifier);
+                writer.Write(state.Time);
+            }
+
+            // Write upcoming attack data.
+            writer.Write(UpcomingAttacks.Count);
+            for (int i = 0; i < UpcomingAttacks.Count; i++)
+                writer.Write((int)UpcomingAttacks[i]);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -273,6 +287,25 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Read vector data.
             MorphoKnightLungeSweeps_SlashDirection = reader.ReadVector2();
             SingleSwipe_SwipeDestination = reader.ReadVector2();
+
+            // Read state data.
+            int stateCount = reader.ReadInt32();
+            if (stateCount >= 1)
+            {
+                StateMachine?.StateStack.Clear();
+                for (int i = 0; i < stateCount; i++)
+                {
+                    TerraBladeAIType state = (TerraBladeAIType)reader.ReadInt32();
+                    StateMachine?.StateStack.Push(StateMachine.StateRegistry[state]);
+                    StateMachine.StateRegistry[state].Time = reader.ReadInt32();
+                }
+            }
+
+            // Read upcoming attack data.
+            UpcomingAttacks.Clear();
+            int upcomingAttacksCount = reader.ReadInt32();
+            for (int i = 0; i < upcomingAttacksCount; i++)
+                UpcomingAttacks.Add((TerraBladeAIType)reader.ReadInt32());
         }
 
         #endregion Networking

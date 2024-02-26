@@ -92,7 +92,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             }
             while (PreviousTwoStates.Contains(candidate));
 
-            candidate = TerraBladeAIType.SingleSwipe;
             List<TerraBladeAIType> pattern =
             [
                 candidate
