@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
+using YouBoss.Content.Particles;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -32,7 +33,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade waits before dashing in the aerial swoop dashes attack.
         /// </summary>
-        public int AerialSwoopDashes_DashWaitTime => (int)(24 - AerialSwoopDashes_DashCounter * 5f) + (AerialSwoopDashes_DashCounter == 0f).ToInt() * 25;
+        public int AerialSwoopDashes_DashWaitTime => (int)(24 - AerialSwoopDashes_DashCounter * 5f) + (AerialSwoopDashes_DashCounter == 0f).ToInt() * 61;
 
         /// <summary>
         /// How long dashes last during the aerial swoop dashes attack.
@@ -108,6 +109,18 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Slow down.
             else if (AITimer <= hoverRedirectTime + dashWaitTime)
             {
+                // Shake the screen a bit and play a sound before the hover redirect before the first swoop as a telegraph.
+                if (AITimer == hoverRedirectTime + 1 && AerialSwoopDashes_DashCounter == 0f)
+                {
+                    SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFurySwing with { Volume = 1.6f });
+                    StartShake(7.4f, shakeStrengthDissipationIncrement: 0.33f);
+                    PulseRingParticle ring = new(NPC.Center, Color.Teal, 2.3f, 0f, 32);
+                    ring.Spawn();
+
+                    NPC.velocity *= 0.15f;
+                    NPC.netUpdate = true;
+                }
+
                 NPC.velocity *= 0.85f;
                 NPC.rotation += TwoPi * NPC.spriteDirection / dashWaitTime;
             }
