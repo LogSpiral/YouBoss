@@ -16,3 +16,10 @@ Buffs: {
 		Description: Unending, swift flight granted
 	}
 }
+
+Items: {
+	CursedMirror: {
+		DisplayName: Cursed Mirror
+		Tooltip: Summons Yourself
+	}
+}
