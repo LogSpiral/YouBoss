@@ -46,7 +46,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             player.CopyVisuals(other);
             player.isFirstFractalAfterImage = true;
             player.firstFractalAfterImageOpacity = 1f;
-            player.ResetEffects();
             player.ResetVisibleAccessories();
             player.UpdateDyes();
             player.DisplayDollUpdate();
