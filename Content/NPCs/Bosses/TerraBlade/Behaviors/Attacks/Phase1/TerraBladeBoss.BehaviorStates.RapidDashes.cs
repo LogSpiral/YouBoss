@@ -27,12 +27,17 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade spends dashing during the rapid dashes attack.
         /// </summary>
-        public int RapidDashes_DashTime => SecondsToFrames(0.2f);
+        public int RapidDashes_DashTime => SecondsToFrames(Main.masterMode ? 0.16f : 0.2f);
 
         /// <summary>
         /// The amount of dash sequences the terra blade does during the rapid dashes attack.
         /// </summary>
         public static int RapidDashes_DashCount => 4;
+
+        /// <summary>
+        /// The speed at which dashes occur during the rapid dashes attack.
+        /// </summary>
+        public static float RapidDashes_DashSpeed => Main.masterMode ? 132f : 120f;
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_RapidDashes()
@@ -121,7 +126,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
                     StartShakeAtPoint(NPC.Center, 5f);
                     NPC.rotation = NPC.rotation.AngleTowards(NPC.AngleTo(Target.Center), 0.6f);
-                    NPC.velocity = NPC.rotation.ToRotationVector2() * 120f;
+                    NPC.velocity = NPC.rotation.ToRotationVector2() * RapidDashes_DashSpeed;
                     NPC.netUpdate = true;
                 }
 

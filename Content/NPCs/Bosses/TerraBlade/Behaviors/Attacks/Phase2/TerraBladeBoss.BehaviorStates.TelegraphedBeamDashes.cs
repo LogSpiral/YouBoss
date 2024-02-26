@@ -35,12 +35,23 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade spends hover redirecting during the telegraphed beam dashes attack.
         /// </summary>
-        public int TelegraphedBeamDashes_HoverRedirectTime => SecondsToFrames((TelegraphedBeamDashes_DashCounter <= 0f || TelegraphedBeamDashes_DashCounter >= TelegraphedBeamDashes_DashCount) ? 0.63f : 0.3167f);
+        public int TelegraphedBeamDashes_HoverRedirectTime
+        {
+            get
+            {
+                bool attackStartingOrEnding = TelegraphedBeamDashes_DashCounter <= 0f || TelegraphedBeamDashes_DashCounter >= TelegraphedBeamDashes_DashCount;
+                float hoverRedirectSeconds = attackStartingOrEnding ? 0.63f : 0.3167f;
+                if (Main.masterMode)
+                    hoverRedirectSeconds -= 0.045f;
+
+                return SecondsToFrames(hoverRedirectSeconds);
+            }
+        }
 
         /// <summary>
         /// How long the terra blade spends reeling back during the telegraphed beam dashes attack.
         /// </summary>
-        public static int TelegraphedBeamDashes_ReelBackTime => SecondsToFrames(0.45f);
+        public static int TelegraphedBeamDashes_ReelBackTime => SecondsToFrames(Main.masterMode ? 0.41f : 0.45f);
 
         /// <summary>
         /// How long the terra blade waits before slowing the dash down during the telegraphed beam dashes attack.
@@ -50,7 +61,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// The amount of dashes the terra blade performs during the telegraphed beam dashes attack.
         /// </summary>
-        public static int TelegraphedBeamDashes_DashCount => 3;
+        public static int TelegraphedBeamDashes_DashCount => Main.masterMode ? 4 : 3;
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_TelegraphedBeamDashes()

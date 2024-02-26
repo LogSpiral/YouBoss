@@ -77,12 +77,17 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             }
             while (PreviousTwoStates.Contains(candidate));
 
+            candidate = TerraBladeAIType.SingleSwipe;
             List<TerraBladeAIType> pattern =
             [
                 candidate
             ];
-            if (candidate == TerraBladeAIType.SingleSwipe && PreviousState != TerraBladeAIType.RapidDashes)
-                pattern.Insert(0, TerraBladeAIType.RapidDashes);
+            if (candidate == TerraBladeAIType.SingleSwipe)
+            {
+                TerraBladeAIType leadUpAttack = Main.rand.NextBool() ? TerraBladeAIType.RapidDashes : TerraBladeAIType.AcceleratingBeamWall;
+                if (PreviousState != leadUpAttack)
+                    pattern.Insert(0, leadUpAttack);
+            }
 
             return [.. pattern];
         }

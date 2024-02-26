@@ -45,7 +45,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade should wait after the attack ends to transition the next one during the the accelerating beam wall attack.
         /// </summary>
-        public static int AcceleratingBeamWall_AttackTransitionDelay => SecondsToFrames(1.2f);
+        public static int AcceleratingBeamWall_AttackTransitionDelay => SecondsToFrames(0.5f);
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_AcceleratingBeamWall()
@@ -76,9 +76,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                     AcceleratingBeamWall_HorizontalHoverOffset = Target.Velocity.X.NonZeroSign() * -700f;
 
                 // Perform hover movement.
-                float hoverRedirectSpeed = InverseLerp(0f, AcceleratingBeamWall_HoverRedirectTime * 0.8f, AITimer).Squared() * 0.95f;
-                Vector2 hoverDestination = Target.Center + new Vector2(AcceleratingBeamWall_HorizontalHoverOffset, 350f) + Target.Velocity * new Vector2(14f, -4f);
-                NPC.SmoothFlyNear(hoverDestination, hoverRedirectSpeed, 0.32f);
+                float hoverRedirectSpeed = InverseLerp(0f, AcceleratingBeamWall_HoverRedirectTime * 0.74f, AITimer).Squared() * 0.95f;
+                Vector2 hoverDestination = Target.Center + new Vector2(AcceleratingBeamWall_HorizontalHoverOffset, 350f) + Target.Velocity * new Vector2(14f, -2f);
+                NPC.SmoothFlyNear(hoverDestination, hoverRedirectSpeed, 0.27f);
 
                 // Point the terra blade at the target.
                 NPC.rotation = NPC.rotation.AngleLerp(NPC.AngleTo(Target.Center), 0.3f);
@@ -137,8 +137,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             if (AITimer <= AcceleratingBeamWall_HoverRedirectTime + AcceleratingBeamWall_SlashDelay + AcceleratingBeamWall_SlashTime + AcceleratingBeamWall_AttackTransitionDelay)
             {
-                // Slow down.
-                NPC.velocity *= 0.7f;
+                // Hover to the side of the target.
+                int attackTransitionTimer = AITimer - AcceleratingBeamWall_HoverRedirectTime - AcceleratingBeamWall_SlashDelay - AcceleratingBeamWall_SlashTime;
+                float hoverRedirectSpeed = InverseLerp(0f, AcceleratingBeamWall_AttackTransitionDelay * 0.6f, attackTransitionTimer).Squared() * 0.4f;
+                Vector2 hoverDestination = Target.Center + Vector2.UnitX * (Target.Center.X - NPC.Center.X).NonZeroSign() * -536f;
+                NPC.SmoothFlyNear(hoverDestination, hoverRedirectSpeed, 0.3f);
 
                 // Point the terra blade away from the target.
                 NPC.rotation = NPC.rotation.AngleLerp(NPC.AngleFrom(Target.Center), 0.2f);

@@ -33,7 +33,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade should wait after the single swipe.
         /// </summary>
-        public static int SingleSwipe_AttackTransitionDelay => SecondsToFrames(0.64f);
+        public static int SingleSwipe_AttackTransitionDelay => SecondsToFrames(Main.masterMode ? 0.52f : 0.64f);
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_SingleSwipe()

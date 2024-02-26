@@ -12,6 +12,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// </summary>
         public int DashSpin_AttackDuration => SecondsToFrames(ByPhase(3f, 2.8f, 2.56f));
 
+        /// <summary>
+        /// The fly acceleration used during the terra blade's spin dash attack.
+        /// </summary>
+        public float DashSpeed_FlyAcceleration => Main.masterMode ? 1.37f : 1.08f;
+
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_DashSpin()
         {
@@ -47,7 +52,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             float distanceToTarget = NPC.Distance(Target.Center);
             float dashSpeed = Remap(distanceToTarget, 375f, 185f, 41f, 16.5f) * InverseLerp(36f, 90f, distanceToTarget);
             NPC.Center = Vector2.Lerp(NPC.Center, Target.Center, 0.009f);
-            NPC.velocity = Vector2.Clamp(NPC.velocity + NPC.DirectionToSafe(Target.Center) * 1.08f, -Vector2.One * dashSpeed, Vector2.One * dashSpeed);
+            NPC.velocity = Vector2.Clamp(NPC.velocity + NPC.DirectionToSafe(Target.Center) * DashSpeed_FlyAcceleration, -Vector2.One * dashSpeed, Vector2.One * dashSpeed);
             PlayerDrawOffsetFactor = InverseLerp(12f, 0f, AITimer);
 
             // Spin in place.

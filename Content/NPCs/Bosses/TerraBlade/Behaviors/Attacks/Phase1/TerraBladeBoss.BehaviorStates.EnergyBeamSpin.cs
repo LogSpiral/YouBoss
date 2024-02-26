@@ -26,6 +26,16 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         public int EnergyBeamSpin_ProjectileReleaseTime => SecondsToFrames(ByPhase(1.4f, 1.4f, 1.5f));
 
         /// <summary>
+        /// The starting speed of the terra blade's projectiles.
+        /// </summary>
+        public float EnergyBeamSpin_ProjectileShootSpeed => Main.masterMode ? 7f : 4f;
+
+        /// <summary>
+        /// The starting speed of the terra blade's projectiles.
+        /// </summary>
+        public float EnergyBeamSpin_ProjectileMaxSpeedBoost => Main.masterMode ? 5f : 0.5f;
+
+        /// <summary>
         /// How long the terra blade waits before transitioning to the next attack during its beam spin attack.
         /// </summary>
         public static int EnergyBeamSpin_AttackTransitionDelay => SecondsToFrames(1.5f);
@@ -84,7 +94,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 if (AITimer % 5 == 0)
                     SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { MaxInstances = 8 }, NPC.Center);
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                    NewProjectileBetter(NPC.Center, NPC.rotation.ToRotationVector2() * 4f, ModContent.ProjectileType<ArcingTerraBeam>(), TerraBeamDamage, 0f, -1, NPC.direction * spinAngularVelocity * 0.02f);
+                    NewProjectileBetter(NPC.Center, NPC.rotation.ToRotationVector2() * EnergyBeamSpin_ProjectileShootSpeed, ModContent.ProjectileType<ArcingTerraBeam>(), TerraBeamDamage, 0f, -1, NPC.direction * spinAngularVelocity * 0.02f, EnergyBeamSpin_ProjectileMaxSpeedBoost);
             }
         }
     }

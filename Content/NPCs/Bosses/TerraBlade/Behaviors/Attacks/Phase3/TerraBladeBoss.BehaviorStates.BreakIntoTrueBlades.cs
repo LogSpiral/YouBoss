@@ -60,6 +60,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// </summary>
         public static int BreakIntoTrueBlades_SplitStabTime => SecondsToFrames(0.0667f);
 
+        /// <summary>
+        /// How many arcing beams should exist in the explosion circle in the true blades attack.
+        /// </summary>
+        public static int BreakIntoTrueBlades_SplitBeamCount => Main.expertMode ? 27 : 20;
+
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_BreakIntoTrueBlades()
         {
@@ -228,7 +233,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Release spreads of light and night beams.
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    int beamCount = 20;
+                    int beamCount = BreakIntoTrueBlades_SplitBeamCount;
                     float bladeArcSpeed = ToRadians(0.51f);
                     for (int i = 0; i < beamCount; i++)
                     {

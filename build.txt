@@ -1,6 +1,6 @@
 displayName = You
 author = Dominic Karma
-version = 1.0.3
+version = 1.0.4
 buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, .github\*, LICENSE, README.md, .editorconfig, .gitignore, .gitattributes
 hideCode = false
 hideResources = false

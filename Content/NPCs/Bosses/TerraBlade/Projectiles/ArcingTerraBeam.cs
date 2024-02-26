@@ -12,7 +12,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
     {
         public ref float ArcAngularVelocity => ref Projectile.ai[0];
 
-        public ref float Time => ref Projectile.ai[1];
+        public ref float MaxSpeedBoost => ref Projectile.ai[1];
+
+        public ref float Time => ref Projectile.ai[2];
 
         public override string Texture => "YouBoss/Content/NPCs/Bosses/TerraBlade/Projectiles/TerraBeam";
 
@@ -41,7 +43,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles
                 Projectile.damage = 0;
 
             // Accelerate and arc.
-            float maxSpeed = 22f;
+            float maxSpeed = MaxSpeedBoost + 22f;
             float acceleration = InverseLerp(0f, 60f, Time).Squared() * 0.7f;
             float newSpeed = Clamp(Projectile.velocity.Length() + acceleration, 0f, maxSpeed);
             Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedBy(ArcAngularVelocity) * newSpeed;

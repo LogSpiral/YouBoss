@@ -25,7 +25,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the diamond sweep attack should wait after concluding before transitioning to the next attack.
         /// </summary>
-        public static int DiamondSweeps_AttackTransitionDelay => SecondsToFrames(1.1f);
+        public static int DiamondSweeps_AttackTransitionDelay => SecondsToFrames(Main.masterMode ? 0.95f : 1.1f);
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_DiamondSweeps()
