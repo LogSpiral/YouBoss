@@ -18,6 +18,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         } = new TerraBladeAIType[2];
 
         /// <summary>
+        /// The upcoming states.
+        /// </summary>
+        public List<TerraBladeAIType> UpcomingAttacks
+        {
+            get;
+            set;
+        } = [];
+
+        /// <summary>
         /// The previous state the terra blade performed.
         /// </summary>
         public TerraBladeAIType PreviousState => PreviousTwoStates[^1];
@@ -39,6 +48,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                     // Supply the state stack with the attack pattern.
                     for (int i = attackPattern.Length - 1; i >= 0; i--)
                         StateMachine.StateStack.Push(StateMachine.StateRegistry[attackPattern[i]]);
+
+                    // Fill the upcoming attacks list. A dummy state is added to the top because the ResetGenericVariables will pop the latest state even in the case of this ResetCycle state, meaning
+                    // that it immediately will do after this is initialized.
+                    UpcomingAttacks.Clear();
+                    UpcomingAttacks.Add(TerraBladeAIType.Count);
+                    UpcomingAttacks.AddRange(attackPattern);
                 });
         }
 

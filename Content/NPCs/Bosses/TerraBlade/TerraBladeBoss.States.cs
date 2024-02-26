@@ -63,6 +63,8 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Reset the sprite direction.
                 NPC.spriteDirection = 1;
             }
+            if (UpcomingAttacks.Any())
+                UpcomingAttacks.RemoveAt(0);
 
             NPC.netUpdate = true;
         }

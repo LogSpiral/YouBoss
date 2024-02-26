@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
+using YouBoss.Content.Particles;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -69,6 +70,19 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Redirect to the bottom left/right of the target at first.
             if (AITimer <= AcceleratingBeamWall_HoverRedirectTime)
             {
+                // Create a telegraph at first.
+                if (AITimer == AcceleratingBeamWall_HoverRedirectTime / 2)
+                {
+                    StartShake(5f);
+                    PerformVFXForMultiplayer(() =>
+                    {
+                        PulseRingParticle ring = new(NPC.Center, Color.Turquoise, 0f, 2f, 18);
+                        ring.Spawn();
+                        ring = new(NPC.Center, Color.Wheat * 0.6f, 0f, 2.1f, 19);
+                        ring.Spawn();
+                    });
+                }
+
                 // Store the forward direction.
                 NPC.direction = (Target.Center.X - NPC.Center.X).NonZeroSign();
 
@@ -137,8 +151,22 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             if (AITimer <= AcceleratingBeamWall_HoverRedirectTime + AcceleratingBeamWall_SlashDelay + AcceleratingBeamWall_SlashTime + AcceleratingBeamWall_AttackTransitionDelay)
             {
-                // Hover to the side of the target.
+                // Create a telegraph if the next attack will be a single swipe.
                 int attackTransitionTimer = AITimer - AcceleratingBeamWall_HoverRedirectTime - AcceleratingBeamWall_SlashDelay - AcceleratingBeamWall_SlashTime;
+                bool willDoSingleSlashNext = UpcomingAttacks.Count >= 2 && UpcomingAttacks[1] == TerraBladeAIType.SingleSwipe;
+                if (willDoSingleSlashNext && attackTransitionTimer == 1)
+                {
+                    StartShake(5f);
+                    PerformVFXForMultiplayer(() =>
+                    {
+                        PulseRingParticle ring = new(NPC.Center, Color.Turquoise, 0f, 2f, 18);
+                        ring.Spawn();
+                        ring = new(NPC.Center, Color.Wheat * 0.6f, 0f, 2.1f, 19);
+                        ring.Spawn();
+                    });
+                }
+
+                // Hover to the side of the target.
                 float hoverRedirectSpeed = InverseLerp(0f, AcceleratingBeamWall_AttackTransitionDelay * 0.6f, attackTransitionTimer).Squared() * 0.4f;
                 Vector2 hoverDestination = Target.Center + Vector2.UnitX * (Target.Center.X - NPC.Center.X).NonZeroSign() * -536f;
                 NPC.SmoothFlyNear(hoverDestination, hoverRedirectSpeed, 0.3f);
