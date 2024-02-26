@@ -49,7 +49,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// The amount of damage terra beam projectiles do.
         /// </summary>
-        public static int TerraBeamDamage => Main.expertMode ? 250 : 210;
+        public static int TerraBeamDamage => Main.expertMode ? 225 : 200;
 
         [AutomatedMethodInvoke]
         public void LoadStateTransitions_MorphoKnightLungeSweeps()
@@ -93,8 +93,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                     ShineInterpolant = InverseLerp(0f, 8f, AITimer);
                 if (doneAttacking)
                     idealRotation += Pi;
+                idealRotation += (Target.Center.X - NPC.Center.X).NonZeroSign() * -0.6f;
 
-                Vector2 hoverDestination = Target.Center + (NPC.Center - Target.Center).SafeNormalize(Vector2.UnitY) * 550f;
+                Vector2 hoverDestination = Target.Center + (NPC.Center - Target.Center).SafeNormalize(Vector2.UnitY) * new Vector2(650f, 540f);
                 NPC.SmoothFlyNear(hoverDestination, 0.18f, 0.85f);
                 NPC.rotation = NPC.rotation.AngleLerp(idealRotation, 0.15f);
                 return;
@@ -123,7 +124,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
                 // Calculate the swipe destination.
                 Vector2 startingDirection = -NPC.rotation.ToRotationVector2();
-                SingleSwipe_SwipeDestination = NPC.Center + startingDirection * 240f;
+                SingleSwipe_SwipeDestination = NPC.Center + startingDirection * 260f;
 
                 // Immediately reset all prior moment.
                 NPC.velocity = Vector2.Zero;
@@ -146,7 +147,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 AfterimageClumpInterpolant = 0.15f;
 
                 // Perform the swipe motion.
-                float swipeArc = Pi / MorphoKnightLungeSweeps_SwipeTime * NPC.direction;
+                float swipeArc = Pi / MorphoKnightLungeSweeps_SwipeTime * NPC.direction * 1.55f;
                 Vector2 originalCenter = NPC.Center;
                 Vector2 forwardForce = MorphoKnightLungeSweeps_SlashDirection * Remap(swingTimer, 0f, 4f, 160f, 84f);
                 NPC.Center = SingleSwipe_SwipeDestination + (originalCenter - SingleSwipe_SwipeDestination).RotatedBy(swipeArc).SafeNormalize(Vector2.Zero) * 190f;
@@ -164,11 +165,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 });
 
                 // Release terra beams.
-                if (Main.netMode != NetmodeID.MultiplayerClient && swingTimer >= 1)
+                if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
                     float terraBeamSpeed = 1.2f;
                     if (swingTimer % 2 == 1)
                         terraBeamSpeed *= 0.15f;
+                    NewProjectileBetter(BladeTip, (NPC.rotation - 0.3f).ToRotationVector2() * terraBeamSpeed, ModContent.ProjectileType<AcceleratingTerraBeam>(), TerraBeamDamage, 0f);
                     NewProjectileBetter(BladeTip, NPC.rotation.ToRotationVector2() * terraBeamSpeed, ModContent.ProjectileType<AcceleratingTerraBeam>(), TerraBeamDamage, 0f);
                 }
 

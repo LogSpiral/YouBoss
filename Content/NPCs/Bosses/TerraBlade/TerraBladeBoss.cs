@@ -200,7 +200,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         public override void SetDefaults()
         {
             NPC.npcSlots = 50f;
-            NPC.damage = 230;
+            NPC.damage = 200;
             NPC.width = 46;
             NPC.height = 46;
             NPC.defense = 35;
@@ -208,7 +208,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             if (Main.expertMode)
             {
-                NPC.damage = 275;
+                NPC.damage = 240;
 
                 // Undo vanilla's automatic Expert boosts.
                 NPC.lifeMax /= 2;
