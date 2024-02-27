@@ -377,7 +377,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             // Make a ton of stars appear in the sky in the third phase.
             if (Phase3)
-                ExtraStarsInSkyCount = Clamp(ExtraStarsInSkyCount + 0.09f, 0f, 360f); ;
+                ExtraStarsInSkyCount = Clamp(ExtraStarsInSkyCount + 0.09f, 0f, 360f);
 
             // Handle AI behaviors.
             StateMachine.PerformBehaviors();
