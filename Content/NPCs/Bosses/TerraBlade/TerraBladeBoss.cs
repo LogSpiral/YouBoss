@@ -137,6 +137,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             private set => myself = value;
         }
 
+        /// <summary>
+        /// The ID of the music this boss uses.
+        /// </summary>
+        public static int MusicID
+        {
+            get;
+            private set;
+        }
+
         #endregion Fields and Properties
 
         #region Initialization
@@ -165,6 +174,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 // Prepare render targets.
                 PlayerDrawContents = new();
                 Main.ContentThatNeedsRenderTargets.Add(PlayerDrawContents);
+
+                // Store the music ID.
+                MusicID = MusicLoader.GetMusicSlot($"{Mod.Name}/Assets/Sounds/Music/You");
             }
 
             // Change the terra blade's hitbox.
@@ -228,7 +240,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.DeathSound = null;
             NPC.value = Item.buyPrice(2, 0, 0, 0) / 5;
             NPC.netAlways = true;
-            Music = MusicID.OtherworldlyBoss2;
         }
 
         #endregion Initialization
@@ -351,7 +362,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             Myself = NPC;
 
             // Reset things every frame.
-            Music = MusicID.OtherworldlyBoss2;
+            Music = MusicID;
             PlayerDrawOffsetFactor = Saturate(PlayerDrawOffsetFactor + 0.06f);
             OriginOffset *= 0.95f;
             CanMove = true;
@@ -374,8 +385,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Use the target's name if not in the starting animation.
             if (!PerformingStartAnimation)
                 NPC.GivenName = Main.LocalPlayer.name;
-            else
-                Music = 0;
 
             // Update the state machine.
             StateMachine.PerformStateTransitionCheck();
