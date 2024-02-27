@@ -125,6 +125,10 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 NPC.rotation = NPC.AngleTo(Target.Center);
             }
 
+            // Sync shortly before the dash, to ensure everyone is on the same page about where the boss should be before it happens.
+            if (Main.netMode == NetmodeID.Server && AITimer == TelegraphedBeamDashes_HoverRedirectTime + TelegraphedBeamDashes_ReelBackTime - 15)
+                NPC.netUpdate = true;
+
             // Dash at the target.
             if (AITimer == TelegraphedBeamDashes_HoverRedirectTime + TelegraphedBeamDashes_ReelBackTime)
             {

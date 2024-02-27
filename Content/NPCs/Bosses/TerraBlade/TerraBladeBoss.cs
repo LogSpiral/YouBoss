@@ -262,6 +262,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             writer.Write(NPC.Opacity);
             writer.Write(NPC.rotation);
             writer.Write(ExtraStarsInSkyCount);
+            writer.Write(AfterimageTrailCompletion);
 
             // Write vector data.
             writer.WriteVector2(MorphoKnightLungeSweeps_SlashDirection);
@@ -294,6 +295,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.Opacity = reader.ReadSingle();
             NPC.rotation = reader.ReadSingle();
             ExtraStarsInSkyCount = reader.ReadSingle();
+            AfterimageTrailCompletion = reader.ReadSingle();
 
             // Read vector data.
             MorphoKnightLungeSweeps_SlashDirection = reader.ReadVector2();
