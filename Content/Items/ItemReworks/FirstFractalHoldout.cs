@@ -44,6 +44,15 @@ namespace YouBoss.Content.Items.SummonItems
         }
 
         /// <summary>
+        /// Whether owner direction changing should be disabled or not.
+        /// </summary>
+        public bool DontChangeOwnerDirection
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The animation completion of the current sword swing.
         /// </summary>
         public float AnimationCompletion => Saturate(Time / UseTime);
@@ -145,6 +154,9 @@ namespace YouBoss.Content.Items.SummonItems
             // Stick to the owner.
             StickToOwner();
 
+            // Reset things every frame.
+            DontChangeOwnerDirection = false;
+
             // Vanish if necessary.
             if (VanishTimer >= 1)
             {
@@ -219,7 +231,8 @@ namespace YouBoss.Content.Items.SummonItems
             Projectile.Center = Owner.RotatedRelativePoint(Owner.MountedCenter);
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
-            Owner.ChangeDir(AngleToXDirection(rotationZAngle));
+            if (!DontChangeOwnerDirection)
+                Owner.ChangeDir(AngleToXDirection(rotationZAngle));
 
             // Decide the arm rotation for the owner.
             float armRotation = rotationZAngle - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4 + StartingRotation;
@@ -255,8 +268,11 @@ namespace YouBoss.Content.Items.SummonItems
                 Add(PolynomialEasing.Quadratic, EasingType.Out, forwardEnd, 1f);
             Rotation = rotationForward.Evaluate(AnimationCompletion, HorizontalDirection == -1f && AnimationCompletion >= 0.7f, 1);
 
+            // Ensure that the player's pose doesn't get changed during the anticipation.
+            DontChangeOwnerDirection = AnimationCompletion < 0.6f;
+
             // Shake the screen as the swing begins.
-            if (Time == (int)(UseTime * 0.6f))
+            if (Time == (int)(UseTime * 0.7f))
             {
                 StartShakeAtPoint(Projectile.Center, 2.8f);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound with { Pitch = Main.rand.NextFloat(0.06f) }, Projectile.Center);
