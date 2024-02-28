@@ -12,8 +12,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using YouBoss.Assets;
 using YouBoss.Common.Tools.Easings;
+using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
 using YouBoss.Core.Graphics.Primitives;
 using YouBoss.Core.Graphics.Shaders;
+using YouBoss.Core.Graphics.SpecificEffectManagers;
 using static YouBoss.Content.Items.ItemReworks.FirstFractal;
 
 namespace YouBoss.Content.Items.ItemReworks
@@ -98,7 +100,7 @@ namespace YouBoss.Content.Items.ItemReworks
         /// <summary>
         /// The amount of updates this sword performs each frame. Higher values for this are useful because they allow for finer subdivisions of the swing animations, thus making the rotation changes less sudden each frame.
         /// </summary>
-        public static int MaxUpdates => 2;
+        public static int MaxUpdates => 3;
 
         /// <summary>
         /// The base scale of this sword.
@@ -280,7 +282,7 @@ namespace YouBoss.Content.Items.ItemReworks
         {
             float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
             float angularVelocity = Abs(angularOffset);
-            if (angularVelocity <= 0.2f || Projectile.scale <= 0.5f)
+            if (angularVelocity <= 0.1f || Projectile.scale <= 0.5f)
                 return;
 
             Vector2 forward = (Projectile.rotation - PiOver4).ToRotationVector2();
@@ -388,8 +390,8 @@ namespace YouBoss.Content.Items.ItemReworks
             float _ = 0f;
             Vector2 swordDirection = (Projectile.rotation - PiOver4).ToRotationVector2();
             Vector2 start = Projectile.Center;
-            Vector2 end = start + swordDirection * Projectile.scale * 90f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, Projectile.width * 0.2f, ref _);
+            Vector2 end = start + swordDirection * Projectile.scale * 100f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, Projectile.width * 0.5f, ref _);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -455,7 +457,7 @@ namespace YouBoss.Content.Items.ItemReworks
             // Prepare the trail vertex cache.
             float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
             float angularVelocity = Abs(angularOffset);
-            float afterimageOpacity = InverseLerp(0.06f, 0.11f, angularVelocity);
+            float afterimageOpacity = InverseLerp(0.07f, 0.13f, angularVelocity);
             VertexPositionColorTexture[] trailVertices = new VertexPositionColorTexture[trailPositions.Count * 2];
             short[] trailIndices = PrimitiveTrail.GetIndicesFromTrailPoints(trailPositions.Count);
             for (int i = 0; i < trailPositions.Count; i++)
@@ -478,7 +480,7 @@ namespace YouBoss.Content.Items.ItemReworks
             trailShader.SetTexture(WavyBlotchNoise, 1, SamplerState.LinearWrap);
             trailShader.TrySetParameter("colorA", new Vector3(0.1f, 0.64f, 0.82f));
             trailShader.TrySetParameter("colorB", new Vector3(1f, 1f, 0.05f));
-            trailShader.TrySetParameter("blackAppearanceInterpolant", 0.3f);
+            trailShader.TrySetParameter("blackAppearanceInterpolant", 0.27f);
             trailShader.TrySetParameter("trailAnimationSpeed", 1.5f);
             trailShader.TrySetParameter("uWorldViewProjection", compositeMatrix);
             trailShader.Apply();

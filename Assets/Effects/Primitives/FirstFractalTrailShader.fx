@@ -54,7 +54,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     float4 color = float4(BlendMode(colorA, colorB * blendInterpolant * 2) * 0.9, 1);
     
     // Interpolate towards black, creating a harsh contrast between the cyans and yellows.
-    color = lerp(color, float4(0, 0, 0, 1), smoothstep(0.3, 0, blackInterpolant - blackAppearanceInterpolant));
+    color = lerp(color, float4(0.06, 0.06, 0.06, 1), smoothstep(0.3, 0, blackInterpolant - blackAppearanceInterpolant));
     
     return color * input.Color * opacity;
 }
