@@ -2,20 +2,20 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace YouBoss.Content.Items.SummonItems
+namespace YouBoss.Content.Items.ItemReworks
 {
     public class FirstFractal : ModItem
     {
         public static int UseTime => FirstFractalHoldout.MaxUpdates * SecondsToFrames(0.75f);
 
-        public static int BaseDamage => 256;
+        public static int BaseDamage => 356;
 
         public override string Texture => $"Terraria/Images/Item_{ItemID.FirstFractal}";
 
         public override void SetDefaults()
         {
-            Item.width = 60;
-            Item.height = 60;
+            Item.width = 72;
+            Item.height = 72;
             Item.damage = BaseDamage;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = UseTime;

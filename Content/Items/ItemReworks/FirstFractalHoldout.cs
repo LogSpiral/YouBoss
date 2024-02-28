@@ -14,9 +14,9 @@ using YouBoss.Assets;
 using YouBoss.Common.Tools.Easings;
 using YouBoss.Core.Graphics.Primitives;
 using YouBoss.Core.Graphics.Shaders;
-using static YouBoss.Content.Items.SummonItems.FirstFractal;
+using static YouBoss.Content.Items.ItemReworks.FirstFractal;
 
-namespace YouBoss.Content.Items.SummonItems
+namespace YouBoss.Content.Items.ItemReworks
 {
     public class FirstFractalHoldout : ModProjectile
     {
@@ -103,7 +103,7 @@ namespace YouBoss.Content.Items.SummonItems
         /// <summary>
         /// The base scale of this sword.
         /// </summary>
-        public static float BaseScale => 1.2f;
+        public static float BaseScale => 1.25f;
 
         /// <summary>
         /// The quad vertices responsible for drawing the sword.
@@ -119,7 +119,7 @@ namespace YouBoss.Content.Items.SummonItems
         /// </summary>
         public static readonly short[] QuadIndices = [0, 1, 2, 2, 3, 0];
 
-        public override string Texture => $"Terraria/Images/Item_{ItemID.FirstFractal}";
+        public override string Texture => "YouBoss/Content/Items/ItemReworks/FirstFractal";
 
         public override void SetStaticDefaults()
         {
@@ -129,16 +129,18 @@ namespace YouBoss.Content.Items.SummonItems
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 60;
+            Projectile.width = Projectile.height = 72;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.MeleeNoSpeed;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 720000;
-            Projectile.MaxUpdates = 2;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = UseTime;
+            Projectile.MaxUpdates = MaxUpdates;
             Projectile.noEnchantmentVisuals = true;
+
+            // Use local i-frames.
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = MaxUpdates * 4;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -147,6 +149,7 @@ namespace YouBoss.Content.Items.SummonItems
             writer.Write(SwingCounter);
 
             writer.Write(OldStartingRotation);
+            writer.Write(Projectile.rotation);
 
             writer.Write(Rotation.X);
             writer.Write(Rotation.Y);
@@ -160,6 +163,7 @@ namespace YouBoss.Content.Items.SummonItems
             SwingCounter = reader.ReadInt32();
 
             OldStartingRotation = reader.ReadSingle();
+            Projectile.rotation = reader.ReadSingle();
 
             float x = reader.ReadSingle();
             float y = reader.ReadSingle();
@@ -379,6 +383,15 @@ namespace YouBoss.Content.Items.SummonItems
         // This projectile should remain glued to the owner's hand, and not move.
         public override bool ShouldUpdatePosition() => false;
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            float _ = 0f;
+            Vector2 swordDirection = (Projectile.rotation - PiOver4).ToRotationVector2();
+            Vector2 start = Projectile.Center;
+            Vector2 end = start + swordDirection * Projectile.scale * 90f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, Projectile.width * 0.2f, ref _);
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = TextureAssets.Projectile[Type].Value;
@@ -422,7 +435,7 @@ namespace YouBoss.Content.Items.SummonItems
             // Prepare the list of smoothened positions.
             int oldPositionCount = 10;
             int subdivisions = 5;
-            float afterimageOffset = 74f;
+            float afterimageOffset = 100f;
             List<Vector2> trailPositions = [];
             for (int i = 0; i < oldPositionCount; i++)
             {
