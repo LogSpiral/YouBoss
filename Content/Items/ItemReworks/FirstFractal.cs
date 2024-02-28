@@ -6,7 +6,7 @@ namespace YouBoss.Content.Items.ItemReworks
 {
     public class FirstFractal : ModItem
     {
-        public static int UseTime => FirstFractalHoldout.MaxUpdates * SecondsToFrames(0.7f);
+        public static int UseTime => FirstFractalHoldout.MaxUpdates * SecondsToFrames(0.64f);
 
         public static int BaseDamage => 356;
 
