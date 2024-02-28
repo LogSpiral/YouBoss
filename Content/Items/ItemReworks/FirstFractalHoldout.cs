@@ -12,7 +12,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using YouBoss.Assets;
 using YouBoss.Common.Tools.Easings;
-using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
 using YouBoss.Core.Graphics.Primitives;
 using YouBoss.Core.Graphics.Shaders;
 using YouBoss.Core.Graphics.SpecificEffectManagers;
@@ -41,9 +40,27 @@ namespace YouBoss.Content.Items.ItemReworks
         }
 
         /// <summary>
+        /// How much longer the anime hit visuals will go on for, in frames.
+        /// </summary>
+        public int AnimeHitVisualsCountdown
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// How many swings have been performed thus far.
         /// </summary>
         public int SwingCounter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Whether the player is currently dashing or not.
+        /// </summary>
+        public bool OwnerIsDashing
         {
             get;
             set;
@@ -103,9 +120,14 @@ namespace YouBoss.Content.Items.ItemReworks
         public static int MaxUpdates => 3;
 
         /// <summary>
+        /// How long the enemy on-hit anime visuals effect lasts.
+        /// </summary>
+        public static int AnimeVisualsDuration => SecondsToFrames(0.05f);
+
+        /// <summary>
         /// The base scale of this sword.
         /// </summary>
-        public static float BaseScale => 1.25f;
+        public static float BaseScale => 1.5f;
 
         /// <summary>
         /// The quad vertices responsible for drawing the sword.
@@ -147,6 +169,8 @@ namespace YouBoss.Content.Items.ItemReworks
 
         public override void SendExtraAI(BinaryWriter writer)
         {
+            writer.Write(OwnerIsDashing);
+
             writer.Write(VanishTimer);
             writer.Write(SwingCounter);
 
@@ -161,6 +185,8 @@ namespace YouBoss.Content.Items.ItemReworks
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
+            OwnerIsDashing = reader.ReadBoolean();
+
             VanishTimer = reader.ReadInt32();
             SwingCounter = reader.ReadInt32();
 
@@ -190,12 +216,21 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Reset things every frame.
             DontChangeOwnerDirection = false;
+            OwnerIsDashing = false;
 
             // Vanish if necessary.
             if (VanishTimer >= 1)
             {
                 DoBehavior_Vanish();
                 return;
+            }
+
+            // Handle anime hit effect visuals.
+            if (AnimeHitVisualsCountdown > 0)
+            {
+                Owner.velocity = Vector2.UnitX * HorizontalDirection * 30f;
+                Time = (int)(UseTime * 0.94f);
+                AnimeHitVisualsCountdown--;
             }
 
             // Handle slash behaviors.
@@ -333,10 +368,21 @@ namespace YouBoss.Content.Items.ItemReworks
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.7f))
             {
+                Owner.velocity.X = HorizontalDirection * 95f;
+                Owner.velocity.Y *= 0.2f;
+
                 StartShakeAtPoint(Projectile.Center, 2.8f);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound with { Pitch = Main.rand.NextFloat(0.06f) }, Projectile.Center);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SlashSound, Projectile.Center);
             }
+
+            OwnerIsDashing = AnimationCompletion >= 0.7f && AnimationCompletion < 0.95f;
+            if (OwnerIsDashing && Owner.immuneTime <= 1)
+                Owner.SetImmuneTimeForAllTypes(2);
+
+            // Slow the player down after the dash.
+            if (Time == (int)(UseTime * 0.95f))
+                Owner.velocity *= 0.1f;
 
             // Appear in the player's hand.
             if (SwingCounter <= 0)
@@ -364,7 +410,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
         public void Behavior_SpinAround()
         {
-            float forwardAngle = Utils.MultiLerp(AnimationCompletion.Squared(), 0.55f, 0.92f, 0f);
+            float forwardAngle = Utils.MultiLerp(AnimationCompletion.Squared(), 0.55f, 1.16f, 0f);
             float spinAngle = Pi * new PolynomialEasing(3.5f).Evaluate(EasingType.InOut, 1f - AnimationCompletion) * -4f;
             Rotation = EulerAnglesConversion(spinAngle, forwardAngle);
 
@@ -488,6 +534,19 @@ namespace YouBoss.Content.Items.ItemReworks
             // Draw the trail.
             Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, trailVertices, 0, trailVertices.Length, trailIndices, 0, trailIndices.Length / 3);
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (OwnerIsDashing && AnimeHitVisualsCountdown <= 0)
+            {
+                if (TerraBladeSilhouetteDrawSystem.SilhouetteOpacity <= 0f)
+                    TerraBladeSilhouetteDrawSystem.Subject = target;
+
+                AnimeHitVisualsCountdown = AnimeVisualsDuration;
+                StartShakeAtPoint(target.Center, 6.4f);
+                Owner.SetImmuneTimeForAllTypes(30);
+            }
         }
     }
 }

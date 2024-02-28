@@ -3,14 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 
-namespace YouBoss.Content.NPCs.Bosses.TerraBlade
+namespace YouBoss.Core.Graphics.SpecificEffectManagers
 {
     public class SilhouetteTargetContent : ARenderTargetContentByRequest
     {
         /// <summary>
         /// The host of this render target to draw.
         /// </summary>
-        public TerraBladeBoss Host
+        public Entity Host
         {
             get;
             internal set;
@@ -36,9 +36,8 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             _wasPrepared = true;
         }
 
-        private void DrawPlayer()
+        private static void DrawPlayer()
         {
-            NPC npc = Host.NPC;
             int owner = Main.myPlayer;
             Player other = Main.player[owner];
             Player player = Main.playerVisualClone[owner] ??= new();
@@ -50,26 +49,25 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             player.UpdateDyes();
             player.DisplayDollUpdate();
             player.UpdateSocialShadow();
-            player.itemAnimationMax = 0;
-            player.itemAnimation = 0;
             player.itemRotation = 0f;
-            player.heldProj = 0;
+            player.heldProj = other.heldProj;
             player.Center = other.Center;
-            player.itemRotation = 0f;
             player.wingFrame = other.wingFrame;
             player.velocity.Y = other.velocity.Y;
             player.PlayerFrame();
             player.socialIgnoreLight = true;
-            player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, npc.rotation);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, 0f, player.fullRotationOrigin, 0f);
         }
 
-        private static void DrawTerraBlade()
+        private void DrawTerraBlade()
         {
-            if (TerraBladeBoss.Myself is null)
+            if (!Host.active)
                 return;
 
-            Main.instance.DrawNPC(TerraBladeBoss.Myself.whoAmI, false);
+            if (Host is NPC n)
+                Main.instance.DrawNPC(n.whoAmI, false);
+            if (Host is Projectile p)
+                Main.instance.DrawProj(p.whoAmI);
         }
     }
 }

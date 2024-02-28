@@ -6,9 +6,9 @@ namespace YouBoss.Content.Items.ItemReworks
 {
     public class FirstFractal : ModItem
     {
-        public static int UseTime => FirstFractalHoldout.MaxUpdates * SecondsToFrames(0.64f);
+        public static int UseTime => FirstFractalHoldout.MaxUpdates * SecondsToFrames(0.55f);
 
-        public static int BaseDamage => 356;
+        public static int BaseDamage => 1000;
 
         public override string Texture => $"Terraria/Images/Item_{ItemID.FirstFractal}";
 
@@ -18,8 +18,8 @@ namespace YouBoss.Content.Items.ItemReworks
             Item.height = 72;
             Item.damage = BaseDamage;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.useTime = UseTime;
-            Item.useAnimation = UseTime;
+            Item.useTime = 13;
+            Item.useAnimation = 13;
             Item.useTurn = true;
             Item.DamageType = DamageClass.MeleeNoSpeed;
             Item.UseSound = null;
