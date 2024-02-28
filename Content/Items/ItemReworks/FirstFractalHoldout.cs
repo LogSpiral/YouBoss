@@ -510,7 +510,7 @@ namespace YouBoss.Content.Items.ItemReworks
             // Prepare the trail vertex cache.
             float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
             float angularVelocity = Abs(angularOffset);
-            float afterimageOpacity = InverseLerp(0.07f, 0.13f, angularVelocity);
+            float afterimageOpacity = InverseLerp(0.056f, 0.1f, angularVelocity);
             VertexPositionColorTexture[] trailVertices = new VertexPositionColorTexture[trailPositions.Count * 2];
             short[] trailIndices = PrimitiveTrail.GetIndicesFromTrailPoints(trailPositions.Count);
             for (int i = 0; i < trailPositions.Count; i++)
