@@ -43,7 +43,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Slow down rapidly at first.
             if (Time <= 15f)
-                Projectile.velocity *= 0.6f;
+                Projectile.velocity *= FirstFractal.HomingBeamDecelerationFactor;
 
             // Make the time go by a lot quicker if moving slowly after the initial slowdown.
             if (Time >= 20f && Projectile.velocity.Length() <= 8f)
@@ -53,8 +53,8 @@ namespace YouBoss.Content.Items.ItemReworks
             NPC potentialTarget = Projectile.FindTargetWithinRange(FirstFractal.HomingBeamSearchRange);
             if (Time >= 20f && potentialTarget is not null && potentialTarget.active)
             {
-                Vector2 idealVelocity = Projectile.DirectionToSafe(potentialTarget.Center) * (Projectile.velocity.Length() + 12f);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, idealVelocity, 0.09f);
+                Vector2 idealVelocity = Projectile.DirectionToSafe(potentialTarget.Center) * (Projectile.velocity.Length() + FirstFractal.HomingBeamAcceleration / FirstFractal.HomingBeamFlySpeedInterpolant);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, idealVelocity, FirstFractal.HomingBeamFlySpeedInterpolant);
             }
 
             // Define rotation.

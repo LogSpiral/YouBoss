@@ -127,7 +127,7 @@ namespace YouBoss.Content.Items.ItemReworks
         /// <summary>
         /// The base scale of this sword.
         /// </summary>
-        public static float BaseScale => 1.5f;
+        public static float BaseScale => 1.2f;
 
         /// <summary>
         /// The quad vertices responsible for drawing the sword.
@@ -164,7 +164,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Use local i-frames.
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = MaxUpdates * 4;
+            Projectile.localNPCHitCooldown = MaxUpdates * 3;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -228,7 +228,7 @@ namespace YouBoss.Content.Items.ItemReworks
             // Handle anime hit effect visuals.
             if (AnimeHitVisualsCountdown > 0)
             {
-                Owner.velocity = Vector2.UnitX * HorizontalDirection * 30f;
+                Owner.velocity = Vector2.UnitX * HorizontalDirection * PlayerPostHitSpeed;
                 Time = (int)(UseTime * 0.94f);
                 AnimeHitVisualsCountdown--;
             }
@@ -368,8 +368,8 @@ namespace YouBoss.Content.Items.ItemReworks
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.7f))
             {
-                Owner.velocity.X = HorizontalDirection * 95f;
-                Owner.velocity.Y *= 0.2f;
+                Owner.velocity.X = HorizontalDirection * PlayerHorizontalDashSpeed;
+                Owner.velocity.Y *= Exp(PlayerHorizontalDashSpeed * -0.0145f);
 
                 StartShakeAtPoint(Projectile.Center, 2.8f);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound with { Pitch = Main.rand.NextFloat(0.06f) }, Projectile.Center);
@@ -381,8 +381,8 @@ namespace YouBoss.Content.Items.ItemReworks
                 Owner.SetImmuneTimeForAllTypes(2);
 
             // Slow the player down after the dash.
-            if (Time == (int)(UseTime * 0.95f))
-                Owner.velocity *= 0.1f;
+            if (Time == (int)(UseTime * 0.95f) && AnimeHitVisualsCountdown <= 0)
+                Owner.velocity.X *= 0.17f;
 
             // Appear in the player's hand.
             if (SwingCounter <= 0)
@@ -424,8 +424,8 @@ namespace YouBoss.Content.Items.ItemReworks
             // Create homing beams.
             if (Main.myPlayer == Projectile.owner && AnimationCompletion >= 0.25f && Time % 3f == 0f)
             {
-                Vector2 beamVelocity = (ZRotation - PiOver4).ToRotationVector2() * new Vector2(250f, 95f);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, beamVelocity, ModContent.ProjectileType<HomingTerraBeam>(), (int)(Projectile.damage * HomingBeamDamageFactor), 0f, Projectile.owner);
+                Vector2 beamVelocity = (ZRotation - PiOver4).ToRotationVector2() * new Vector2(1f, 0.4f) * HomingBeamStartingSpeed;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, beamVelocity.RotatedBy(StartingRotation), ModContent.ProjectileType<HomingTerraBeam>(), (int)(Projectile.damage * HomingBeamDamageFactor), 0f, Projectile.owner);
             }
         }
 
@@ -454,7 +454,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Calculate matrices that define the quad's orientation.
             Matrix translation = Matrix.CreateTranslation(new Vector3(Projectile.Center.X - Main.screenPosition.X, Projectile.Center.Y - Main.screenPosition.Y, 0f));
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, -100f, 100f);
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, -150f, 150f);
             Matrix view = translation * Main.GameViewMatrix.TransformationMatrix * projection;
             Matrix rotation = Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateRotationZ(StartingRotation);
             Matrix scale = Matrix.CreateScale(Projectile.scale);
@@ -488,7 +488,7 @@ namespace YouBoss.Content.Items.ItemReworks
         public void DrawAfterimageTrail(Matrix compositeMatrix)
         {
             // Prepare the list of smoothened positions.
-            int oldPositionCount = 10;
+            int oldPositionCount = 15;
             int subdivisions = 5;
             float afterimageOffset = 100f;
             List<Vector2> trailPositions = [];
@@ -533,8 +533,8 @@ namespace YouBoss.Content.Items.ItemReworks
             trailShader.SetTexture(WavyBlotchNoise, 1, SamplerState.LinearWrap);
             trailShader.TrySetParameter("colorA", new Vector3(0.1f, 0.64f, 0.82f));
             trailShader.TrySetParameter("colorB", new Vector3(1f, 1f, 0.05f));
-            trailShader.TrySetParameter("blackAppearanceInterpolant", 0.27f);
-            trailShader.TrySetParameter("trailAnimationSpeed", 1.5f);
+            trailShader.TrySetParameter("blackAppearanceInterpolant", 0.36f);
+            trailShader.TrySetParameter("trailAnimationSpeed", 1.2f);
             trailShader.TrySetParameter("uWorldViewProjection", compositeMatrix);
             trailShader.Apply();
 
@@ -552,7 +552,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
                 AnimeHitVisualsCountdown = AnimeVisualsDuration;
                 StartShakeAtPoint(target.Center, 6.4f);
-                Owner.SetImmuneTimeForAllTypes(30);
+                Owner.SetImmuneTimeForAllTypes(PlayerPostHitIFrameGracePeriod);
             }
         }
     }
