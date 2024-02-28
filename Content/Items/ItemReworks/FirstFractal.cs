@@ -61,12 +61,10 @@ namespace YouBoss.Content.Items.ItemReworks
         /// </summary>
         public static float HomingBeamDecelerationFactor => 0.6f;
 
-        public override string Texture => $"Terraria/Images/Item_{ItemID.FirstFractal}";
-
         public override void SetDefaults()
         {
-            Item.width = 72;
-            Item.height = 72;
+            Item.width = 88;
+            Item.height = 88;
             Item.damage = BaseDamage;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 11;

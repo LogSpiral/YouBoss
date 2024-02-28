@@ -443,7 +443,7 @@ namespace YouBoss.Content.Items.ItemReworks
             float _ = 0f;
             Vector2 swordDirection = (Projectile.rotation - PiOver4).ToRotationVector2();
             Vector2 start = Projectile.Center;
-            Vector2 end = start + swordDirection * Projectile.scale * 100f;
+            Vector2 end = start + swordDirection * Projectile.scale * 112f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, Projectile.width * 0.5f, ref _);
         }
 
@@ -490,7 +490,7 @@ namespace YouBoss.Content.Items.ItemReworks
             // Prepare the list of smoothened positions.
             int oldPositionCount = 15;
             int subdivisions = 5;
-            float afterimageOffset = 100f;
+            float afterimageOffset = 118f;
             List<Vector2> trailPositions = [];
             for (int i = 0; i < oldPositionCount; i++)
             {
@@ -521,7 +521,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
                 Vector2 forwardDirection = (trailPositions[i] - Projectile.Center).SafeNormalize(Vector2.UnitY);
                 Vector3 leftPosition = new(trailPositions[i] - Projectile.Center, 0f);
-                Vector3 rightPosition = new(trailPositions[i] - Projectile.Center - forwardDirection * Projectile.scale * 60f, 0f);
+                Vector3 rightPosition = new(trailPositions[i] - Projectile.Center - forwardDirection * Projectile.scale * 90f, 0f);
 
                 Color c = Color.White * afterimageOpacity;
                 trailVertices[i * 2] = new(leftPosition, c, leftTextureCoords);
