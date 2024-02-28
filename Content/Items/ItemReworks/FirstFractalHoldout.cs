@@ -74,7 +74,6 @@ namespace YouBoss.Content.Items.SummonItems
             Projectile.penetrate = -1;
             Projectile.timeLeft = 7200;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.MaxUpdates = 1;
             Projectile.localNPCHitCooldown = UseTime;
             Projectile.noEnchantmentVisuals = true;
         }
@@ -121,7 +120,7 @@ namespace YouBoss.Content.Items.SummonItems
             Projectile.Center = Owner.RotatedRelativePoint(Owner.MountedCenter);
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
-            Owner.ChangeDir((int)HorizontalDirection);
+            Owner.ChangeDir(AngleToXDirection(rotationZAngle));
 
             // Increment time and disappear once the AI timer has reached its maximum.
             Time++;
@@ -148,25 +147,49 @@ namespace YouBoss.Content.Items.SummonItems
             if (Main.gameMenu)
                 return;
 
-            switch (SwingCounter % 1)
+            Quaternion forwardStart = EulerAnglesConversion(-0.06f, 0.12f);
+            Quaternion forwardAnticipation = EulerAnglesConversion(-1.96f, -0.47f);
+            Quaternion forwardSlash = EulerAnglesConversion(2.65f, -0.8f);
+            Quaternion forwardEnd = EulerAnglesConversion(3.95f, 0.15f);
+
+            Quaternion upwardSlash = EulerAnglesConversion(-0.06f, 0.45f);
+            Quaternion upwardEnd = EulerAnglesConversion(-0.07f, 0.15f);
+
+            switch (SwingCounter % 3)
             {
                 case 0:
-                    Quaternion start = EulerAnglesConversion(-0.06f, 0.12f);
-                    Quaternion anticipation = EulerAnglesConversion(-1.26f, 0.47f);
-                    Quaternion slash = EulerAnglesConversion(2.65f, 0.8f);
-                    Quaternion end = EulerAnglesConversion(2.65f, 0.15f);
+                    PiecewiseRotation rotationForward = new PiecewiseRotation().
+                        Add(PolynomialEasing.Quadratic, EasingType.Out, forwardAnticipation, 0.4f, forwardStart).
+                        Add(PolynomialEasing.Quartic, EasingType.In, forwardSlash, 0.6f).
+                        Add(PolynomialEasing.Quadratic, EasingType.Out, forwardEnd, 1f);
+                    Rotation = rotationForward.Evaluate(AnimationCompletion);
 
-                    PiecewiseRotation rotation = new PiecewiseRotation().
-                        Add(PolynomialEasing.Quadratic, EasingType.Out, anticipation, 0.51f, start).
-                        Add(PolynomialEasing.Quartic, EasingType.In, slash, 0.9f).
-                        Add(PolynomialEasing.Quadratic, EasingType.Out, end, 1f);
-                    Rotation = rotation.Evaluate(AnimationCompletion);
-
-                    if (Time == (int)(UseTime * 0.7f))
+                    if (Time == (int)(UseTime * 0.6f))
                         StartShakeAtPoint(Projectile.Center, 3f);
 
-                    Projectile.scale = InverseLerpBump(0f, 0.18f, 0.91f, 1f, AnimationCompletion);
+                    Projectile.scale = InverseLerp(0f, 0.18f, AnimationCompletion);
+                    break;
 
+                case 1:
+                    PiecewiseRotation rotationUpward = new PiecewiseRotation().
+                        Add(new PolynomialEasing(12f), EasingType.InOut, upwardSlash, 0.67f, forwardEnd).
+                        Add(PolynomialEasing.Quadratic, EasingType.In, upwardEnd, 1f);
+                    Rotation = rotationUpward.Evaluate(AnimationCompletion);
+
+                    if (Time == (int)(UseTime * 0.3f))
+                        StartShakeAtPoint(Projectile.Center, 3f);
+
+                    break;
+
+                case 2:
+                    float forwardAngle = Utils.MultiLerp(AnimationCompletion.Squared(), 0.15f, 0.87f, 0f);
+                    float spinAngle = Pi * PolynomialEasing.Cubic.Evaluate(EasingType.InOut, 1f - AnimationCompletion) * -4f;
+                    Rotation = EulerAnglesConversion(spinAngle - 0.12f, forwardAngle);
+
+                    if (Time == (int)(UseTime * 0.25f))
+                        StartShakeAtPoint(Projectile.Center, 4f);
+
+                    Projectile.scale = InverseLerp(1f, 0.89f, AnimationCompletion);
                     break;
             }
         }

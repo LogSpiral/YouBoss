@@ -6,7 +6,7 @@ namespace YouBoss.Content.Items.SummonItems
 {
     public class FirstFractal : ModItem
     {
-        public static int UseTime => SecondsToFrames(0.58f);
+        public static int UseTime => SecondsToFrames(0.8f);
 
         public static int BaseDamage => 256;
 
