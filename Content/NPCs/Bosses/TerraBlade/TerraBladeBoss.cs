@@ -233,7 +233,6 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             NPC.aiStyle = -1;
             AIType = -1;
             NPC.knockBackResist = 0f;
-            NPC.canGhostHeal = false;
             NPC.boss = true;
             NPC.hide = true;
             NPC.noGravity = true;
