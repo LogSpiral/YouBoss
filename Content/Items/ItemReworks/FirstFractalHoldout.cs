@@ -3,9 +3,11 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using YouBoss.Assets;
 using YouBoss.Common.Tools.Easings;
 using YouBoss.Core.Graphics.Shaders;
 using static YouBoss.Content.Items.SummonItems.FirstFractal;
@@ -67,6 +69,11 @@ namespace YouBoss.Content.Items.SummonItems
         public ref float StartingRotation => ref Projectile.ai[2];
 
         /// <summary>
+        /// The amount of updates this sword performs each frame. Higher values for this are useful because they allow for finer subdivisions of the swing animations, thus making the rotation changes less sudden each frame.
+        /// </summary>
+        public static int MaxUpdates => 2;
+
+        /// <summary>
         /// The quad vertices responsible for drawing the sword.
         /// </summary>
         public static VertexPositionColorTexture[] SwordQuad
@@ -96,6 +103,7 @@ namespace YouBoss.Content.Items.SummonItems
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 7200;
+            Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = UseTime;
             Projectile.noEnchantmentVisuals = true;
@@ -103,6 +111,7 @@ namespace YouBoss.Content.Items.SummonItems
 
         public override void SendExtraAI(BinaryWriter writer)
         {
+            writer.Write(VanishTimer);
             writer.Write(SwingCounter);
             writer.Write(Rotation.X);
             writer.Write(Rotation.Y);
@@ -112,6 +121,7 @@ namespace YouBoss.Content.Items.SummonItems
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
+            VanishTimer = reader.ReadInt32();
             SwingCounter = reader.ReadInt32();
 
             float x = reader.ReadSingle();
@@ -175,6 +185,7 @@ namespace YouBoss.Content.Items.SummonItems
 
         public void HandleSlashes()
         {
+            // Calculate rotation keyframes in advance.
             Quaternion forwardStart = EulerAnglesConversion(-0.06f, 0.12f);
             Quaternion forwardAnticipation = EulerAnglesConversion(-1.96f, -0.47f);
             Quaternion forwardSlash = EulerAnglesConversion(2.65f, -0.8f);
@@ -213,12 +224,22 @@ namespace YouBoss.Content.Items.SummonItems
             // Decide the arm rotation for the owner.
             float armRotation = rotationZAngle - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4 + StartingRotation;
             Owner.SetCompositeArmFront(Math.Abs(armRotation) > 0.01f, Player.CompositeArmStretchAmount.Full, armRotation);
+
+            // Create slash particles.
+            CreateSlashParticles(Vector2.Zero);
+        }
+
+        public void CreateSlashParticles(Vector2 slashDirection)
+        {
+
         }
 
         public void DoBehavior_Vanish()
         {
             // Vanish.
-            VanishTimer++;
+            if (Projectile.IsFinalExtraUpdate())
+                VanishTimer++;
+
             Projectile.scale = InverseLerp(11f, 0f, VanishTimer).Squared();
 
             // Die once completely shrunk.
@@ -229,17 +250,22 @@ namespace YouBoss.Content.Items.SummonItems
         public void DoBehavior_SwingForward(Quaternion forwardStart, Quaternion forwardAnticipation, Quaternion forwardSlash, Quaternion forwardEnd)
         {
             PiecewiseRotation rotationForward = new PiecewiseRotation().
-                Add(PolynomialEasing.Quadratic, EasingType.Out, forwardAnticipation, 0.4f, forwardStart).
-                Add(PolynomialEasing.Quartic, EasingType.In, forwardSlash, 0.6f).
+                Add(SineEasing.Default, EasingType.Out, forwardAnticipation, 0.5f, forwardStart).
+                Add(PolynomialEasing.Quartic, EasingType.In, forwardSlash, 0.7f).
                 Add(PolynomialEasing.Quadratic, EasingType.Out, forwardEnd, 1f);
-            Rotation = rotationForward.Evaluate(AnimationCompletion, HorizontalDirection == -1f && AnimationCompletion >= 0.6f, 1);
+            Rotation = rotationForward.Evaluate(AnimationCompletion, HorizontalDirection == -1f && AnimationCompletion >= 0.7f, 1);
 
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.6f))
+            {
                 StartShakeAtPoint(Projectile.Center, 2.8f);
+                SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound with { Pitch = Main.rand.NextFloat(0.06f) }, Projectile.Center);
+                SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SlashSound, Projectile.Center);
+            }
 
             // Appear in the player's hand.
-            Projectile.scale = InverseLerp(0f, 0.18f, AnimationCompletion);
+            if (SwingCounter <= 0)
+                Projectile.scale = InverseLerp(0f, 0.18f, AnimationCompletion);
         }
 
         public void DoBehavior_SwingUpward(Quaternion forwardEnd, Quaternion upwardSlash, Quaternion upwardEnd)
@@ -251,21 +277,25 @@ namespace YouBoss.Content.Items.SummonItems
 
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.3f))
+            {
                 StartShakeAtPoint(Projectile.Center, 2.8f);
+                SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound with { Pitch = Main.rand.NextFloat(0.06f) }, Projectile.Center);
+                SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SlashSound, Projectile.Center);
+            }
         }
 
         public void Behavior_SpinAround()
         {
-            float forwardAngle = Utils.MultiLerp(AnimationCompletion.Squared(), 0.55f, 0.87f, 0f);
-            float spinAngle = Pi * PolynomialEasing.Cubic.Evaluate(EasingType.InOut, 1f - AnimationCompletion) * -4f;
+            float forwardAngle = Utils.MultiLerp(AnimationCompletion.Squared(), 0.55f, 0.92f, 0f);
+            float spinAngle = Pi * new PolynomialEasing(3.5f).Evaluate(EasingType.InOut, 1f - AnimationCompletion) * -4f;
             Rotation = EulerAnglesConversion(spinAngle, forwardAngle);
 
             // Shake the screen as the swing begins. This is slightly stronger than the older swings due to its longer execution.
             if (Time == (int)(UseTime * 0.25f))
+            {
                 StartShakeAtPoint(Projectile.Center, 5f);
-
-            // Disappear in the player's hand.
-            Projectile.scale = InverseLerp(1f, 0.89f, AnimationCompletion);
+                SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SplitSound, Projectile.Center);
+            }
         }
 
         private Quaternion EulerAnglesConversion(float angle2D, float angleSide = 0f)
@@ -299,7 +329,7 @@ namespace YouBoss.Content.Items.SummonItems
                 SwordQuad = [topLeft, topRight, bottomRight, bottomLeft];
             }
 
-            // Draw the quads.
+            // Draw the sword.
             ManagedShader projectionShader = ShaderManager.GetShader("PrimitiveProjectionShader");
             projectionShader.TrySetParameter("uWorldViewProjection", rotation * scale * view);
             projectionShader.Apply();
