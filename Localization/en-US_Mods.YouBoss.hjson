@@ -9,6 +9,7 @@ Projectiles: {
 	TerraBladeSplit.DisplayName: Terra Blade Component
 	TerraGroundShock.DisplayName: Terra Ground Shock
 	FirstFractalHoldout.DisplayName: First Fractal
+	HomingTerraBeam.DisplayName: Terra Beam
 }
 
 Buffs: {

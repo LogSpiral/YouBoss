@@ -8,7 +8,11 @@ namespace YouBoss.Content.Items.ItemReworks
     {
         public static int UseTime => FirstFractalHoldout.MaxUpdates * SecondsToFrames(0.55f);
 
-        public static int BaseDamage => 1000;
+        public static int BaseDamage => 1500;
+
+        public static float HomingBeamSearchRange => 1372f;
+
+        public static float HomingBeamDamageFactor => 0.2f;
 
         public override string Texture => $"Terraria/Images/Item_{ItemID.FirstFractal}";
 

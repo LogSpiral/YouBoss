@@ -420,6 +420,13 @@ namespace YouBoss.Content.Items.ItemReworks
                 StartShakeAtPoint(Projectile.Center, 5f);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.SplitSound, Projectile.Center);
             }
+
+            // Create homing beams.
+            if (Main.myPlayer == Projectile.owner && AnimationCompletion >= 0.25f && Time % 3f == 0f)
+            {
+                Vector2 beamVelocity = (ZRotation - PiOver4).ToRotationVector2() * new Vector2(250f, 95f);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, beamVelocity, ModContent.ProjectileType<HomingTerraBeam>(), (int)(Projectile.damage * HomingBeamDamageFactor), 0f, Projectile.owner);
+            }
         }
 
         private Quaternion EulerAnglesConversion(float angle2D, float angleSide = 0f)
