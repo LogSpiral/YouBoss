@@ -53,6 +53,15 @@ namespace YouBoss.Content.Items.SummonItems
         }
 
         /// <summary>
+        /// The previous starting rotation of the blade prior to the current animation sequence.
+        /// </summary>
+        public float OldStartingRotation
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The Z axis' rotation relative to the <see cref="Rotation"/> of this sword.
         /// </summary>
         public float RotationZAngle => Atan2((Rotation.W * Rotation.Z + Rotation.X * Rotation.Y) * 2f, 1f - (Rotation.Y.Squared() + Rotation.Z.Squared()) * 2f);
@@ -127,6 +136,9 @@ namespace YouBoss.Content.Items.SummonItems
         {
             writer.Write(VanishTimer);
             writer.Write(SwingCounter);
+
+            writer.Write(OldStartingRotation);
+
             writer.Write(Rotation.X);
             writer.Write(Rotation.Y);
             writer.Write(Rotation.Z);
@@ -137,6 +149,8 @@ namespace YouBoss.Content.Items.SummonItems
         {
             VanishTimer = reader.ReadInt32();
             SwingCounter = reader.ReadInt32();
+
+            OldStartingRotation = reader.ReadSingle();
 
             float x = reader.ReadSingle();
             float y = reader.ReadSingle();
@@ -185,8 +199,8 @@ namespace YouBoss.Content.Items.SummonItems
 
                     if (SwingCounter % 3 == 0)
                     {
-                        StartingRotation = Projectile.velocity.ToRotation();
                         HorizontalDirection = Projectile.velocity.X.NonZeroSign();
+                        OldStartingRotation = StartingRotation;
                     }
 
                     Time = 0f;
@@ -238,7 +252,7 @@ namespace YouBoss.Content.Items.SummonItems
             Projectile.Center = Owner.RotatedRelativePoint(Owner.MountedCenter);
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
-            if (!DontChangeOwnerDirection)
+            if (!DontChangeOwnerDirection && Time >= 2 && VanishTimer <= 0)
                 Owner.ChangeDir(AngleToXDirection(RotationZAngle) * (int)HorizontalDirection);
 
             // Decide the arm rotation for the owner.
@@ -253,15 +267,15 @@ namespace YouBoss.Content.Items.SummonItems
         {
             float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
             float angularVelocity = Abs(angularOffset);
-            if (angularVelocity <= 0.2f)
+            if (angularVelocity <= 0.2f || Projectile.scale <= 0.5f)
                 return;
 
             for (int i = 0; i < 2; i++)
             {
                 Vector2 forward = (Projectile.rotation - PiOver4).ToRotationVector2();
                 Vector2 perpendicular = forward.RotatedBy(angularOffset.NonZeroSign() * PiOver2);
-                Dust energy = Dust.NewDustPerfect(Projectile.Center + forward * Main.rand.NextFloat(28f, 74f), 264);
-                energy.velocity = perpendicular * 3f;
+                Dust energy = Dust.NewDustPerfect(Projectile.Center + forward * Main.rand.NextFloat(28f, 74f) * Projectile.scale, 264);
+                energy.velocity = perpendicular * 3f + Owner.velocity * 0.35f;
                 energy.color = Color.Lerp(Color.Turquoise, Color.Yellow, Sqrt(Main.rand.NextFloat(0.95f)));
                 energy.scale = Main.rand.NextFloat(1f, 1.6f);
                 energy.fadeIn = Main.rand.NextFloat(0.9f);
@@ -284,8 +298,19 @@ namespace YouBoss.Content.Items.SummonItems
 
         public void DoBehavior_SwingForward(Quaternion forwardStart, Quaternion forwardAnticipation, Quaternion forwardSlash, Quaternion forwardEnd)
         {
+            // Look towards the mouse.
+            if (Main.myPlayer == Projectile.owner && Time < MaxUpdates * 10f && SwingCounter >= 1)
+            {
+                float baseRotation = Projectile.AngleTo(Main.MouseWorld);
+                if (Sin(baseRotation) > Sin(OldStartingRotation))
+                    baseRotation += Pi;
+
+                StartingRotation = StartingRotation.AngleLerp(baseRotation, Time / MaxUpdates / 35f);
+            }
+
+            bool longerAnticipation = SwingCounter == 0;
             PiecewiseRotation rotationForward = new PiecewiseRotation().
-                Add(SineEasing.Default, EasingType.Out, forwardAnticipation, 0.5f, forwardStart).
+                Add(SineEasing.Default, longerAnticipation ? EasingType.Out : EasingType.In, forwardAnticipation, 0.5f, forwardStart).
                 Add(PolynomialEasing.Quartic, EasingType.In, forwardSlash, 0.7f).
                 Add(PolynomialEasing.Quadratic, EasingType.Out, forwardEnd, 1f);
             Rotation = rotationForward.Evaluate(AnimationCompletion, HorizontalDirection == -1f && AnimationCompletion >= 0.7f, 1);
@@ -380,6 +405,11 @@ namespace YouBoss.Content.Items.SummonItems
             Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, SwordQuad, 0, SwordQuad.Length, QuadIndices, 0, QuadIndices.Length / 3);
 
             return false;
+        }
+
+        public void DrawAfterimageTrail()
+        {
+            int oldPositionCount = 10;
         }
     }
 }
