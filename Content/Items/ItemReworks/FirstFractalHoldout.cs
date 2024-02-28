@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -9,6 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using YouBoss.Assets;
 using YouBoss.Common.Tools.Easings;
+using YouBoss.Core.Graphics.Primitives;
 using YouBoss.Core.Graphics.Shaders;
 using static YouBoss.Content.Items.SummonItems.FirstFractal;
 
@@ -64,7 +68,7 @@ namespace YouBoss.Content.Items.SummonItems
         /// <summary>
         /// The Z axis' rotation relative to the <see cref="Rotation"/> of this sword.
         /// </summary>
-        public float RotationZAngle => Atan2((Rotation.W * Rotation.Z + Rotation.X * Rotation.Y) * 2f, 1f - (Rotation.Y.Squared() + Rotation.Z.Squared()) * 2f);
+        public float ZRotation => Atan2((Rotation.W * Rotation.Z + Rotation.X * Rotation.Y) * 2f, 1f - (Rotation.Y.Squared() + Rotation.Z.Squared()) * 2f);
 
         /// <summary>
         /// The animation completion of the current sword swing.
@@ -97,6 +101,11 @@ namespace YouBoss.Content.Items.SummonItems
         public static int MaxUpdates => 2;
 
         /// <summary>
+        /// The base scale of this sword.
+        /// </summary>
+        public static float BaseScale => 1.2f;
+
+        /// <summary>
         /// The quad vertices responsible for drawing the sword.
         /// </summary>
         public static VertexPositionColorTexture[] SwordQuad
@@ -114,8 +123,8 @@ namespace YouBoss.Content.Items.SummonItems
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 120;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Type] = 120;
         }
 
         public override void SetDefaults()
@@ -125,7 +134,7 @@ namespace YouBoss.Content.Items.SummonItems
             Projectile.DamageType = DamageClass.MeleeNoSpeed;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 7200;
+            Projectile.timeLeft = 720000;
             Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = UseTime;
@@ -161,7 +170,7 @@ namespace YouBoss.Content.Items.SummonItems
 
         public override void AI()
         {
-            // Initialize directions.
+            // Initialize things.
             if (HorizontalDirection == 0f)
             {
                 StartingRotation = Projectile.velocity.ToRotation();
@@ -214,7 +223,7 @@ namespace YouBoss.Content.Items.SummonItems
             }
 
             // Store the rotation.
-            Projectile.rotation = StartingRotation + RotationZAngle;
+            Projectile.rotation = StartingRotation + ZRotation;
         }
 
         public void HandleSlashes()
@@ -253,10 +262,10 @@ namespace YouBoss.Content.Items.SummonItems
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
             if (!DontChangeOwnerDirection && Time >= 2 && VanishTimer <= 0)
-                Owner.ChangeDir(AngleToXDirection(RotationZAngle) * (int)HorizontalDirection);
+                Owner.ChangeDir(AngleToXDirection(ZRotation) * (int)HorizontalDirection);
 
             // Decide the arm rotation for the owner.
-            float armRotation = RotationZAngle - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4 + StartingRotation;
+            float armRotation = ZRotation - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4 + StartingRotation;
             Owner.SetCompositeArmFront(Math.Abs(armRotation) > 0.01f, Player.CompositeArmStretchAmount.Full, armRotation);
 
             // Create slash particles.
@@ -270,17 +279,14 @@ namespace YouBoss.Content.Items.SummonItems
             if (angularVelocity <= 0.2f || Projectile.scale <= 0.5f)
                 return;
 
-            for (int i = 0; i < 2; i++)
-            {
-                Vector2 forward = (Projectile.rotation - PiOver4).ToRotationVector2();
-                Vector2 perpendicular = forward.RotatedBy(angularOffset.NonZeroSign() * PiOver2);
-                Dust energy = Dust.NewDustPerfect(Projectile.Center + forward * Main.rand.NextFloat(28f, 74f) * Projectile.scale, 264);
-                energy.velocity = perpendicular * 3f + Owner.velocity * 0.35f;
-                energy.color = Color.Lerp(Color.Turquoise, Color.Yellow, Sqrt(Main.rand.NextFloat(0.95f)));
-                energy.scale = Main.rand.NextFloat(1f, 1.6f);
-                energy.fadeIn = Main.rand.NextFloat(0.9f);
-                energy.noGravity = true;
-            }
+            Vector2 forward = (Projectile.rotation - PiOver4).ToRotationVector2();
+            Vector2 perpendicular = forward.RotatedBy(angularOffset.NonZeroSign() * PiOver2);
+            Dust energy = Dust.NewDustPerfect(Projectile.Center + forward * Main.rand.NextFloat(28f, 74f) * Projectile.scale, 264);
+            energy.velocity = perpendicular * 3f + Owner.velocity * 0.35f;
+            energy.color = Color.Lerp(Color.Turquoise, Color.Yellow, Sqrt(Main.rand.NextFloat(0.95f)));
+            energy.scale = Main.rand.NextFloat(1f, 1.6f);
+            energy.fadeIn = Main.rand.NextFloat(0.9f);
+            energy.noGravity = true;
         }
 
         public void DoBehavior_Vanish()
@@ -289,7 +295,7 @@ namespace YouBoss.Content.Items.SummonItems
             if (Projectile.IsFinalExtraUpdate())
                 VanishTimer++;
 
-            Projectile.scale = InverseLerp(11f, 0f, VanishTimer).Squared();
+            Projectile.scale = InverseLerp(11f, 0f, VanishTimer).Squared() * BaseScale;
 
             // Die once completely shrunk.
             if (Projectile.scale <= 0f)
@@ -328,7 +334,7 @@ namespace YouBoss.Content.Items.SummonItems
 
             // Appear in the player's hand.
             if (SwingCounter <= 0)
-                Projectile.scale = InverseLerp(0f, 0.18f, AnimationCompletion);
+                Projectile.scale = InverseLerp(0f, 0.18f, AnimationCompletion) * BaseScale;
         }
 
         public void DoBehavior_SwingUpward(Quaternion forwardEnd, Quaternion upwardSlash, Quaternion upwardEnd)
@@ -384,6 +390,7 @@ namespace YouBoss.Content.Items.SummonItems
             Matrix view = translation * Main.GameViewMatrix.TransformationMatrix * projection;
             Matrix rotation = Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateRotationZ(StartingRotation);
             Matrix scale = Matrix.CreateScale(Projectile.scale);
+            Matrix compositeMatrix = rotation * scale * view;
 
             // Generate the quads in a clockwise orientation.
             if (SwordQuad is null)
@@ -395,9 +402,12 @@ namespace YouBoss.Content.Items.SummonItems
                 SwordQuad = [topLeft, topRight, bottomRight, bottomLeft];
             }
 
+            // Draw the afterimage trail.
+            DrawAfterimageTrail(compositeMatrix);
+
             // Draw the sword.
             ManagedShader projectionShader = ShaderManager.GetShader("PrimitiveProjectionShader");
-            projectionShader.TrySetParameter("uWorldViewProjection", rotation * scale * view);
+            projectionShader.TrySetParameter("uWorldViewProjection", compositeMatrix);
             projectionShader.Apply();
             Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
@@ -407,9 +417,62 @@ namespace YouBoss.Content.Items.SummonItems
             return false;
         }
 
-        public void DrawAfterimageTrail()
+        public void DrawAfterimageTrail(Matrix compositeMatrix)
         {
+            // Prepare the list of smoothened positions.
             int oldPositionCount = 10;
+            int subdivisions = 5;
+            float afterimageOffset = 74f;
+            List<Vector2> trailPositions = [];
+            for (int i = 0; i < oldPositionCount; i++)
+            {
+                float startingRotation = Projectile.oldRot[i] - Projectile.rotation - PiOver4;
+                float endingRotation = Projectile.oldRot[i + 1] - Projectile.rotation - PiOver4;
+                for (int j = 0; j < subdivisions; j++)
+                {
+                    float rotation = startingRotation.AngleLerp(endingRotation, j / (float)subdivisions);
+                    trailPositions.Add(Projectile.Center + rotation.ToRotationVector2() * afterimageOffset);
+                }
+            }
+
+            // Terminate this method immediately if there's no trail points to use.
+            if (!trailPositions.Any())
+                return;
+
+            // Prepare the trail vertex cache.
+            float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
+            float angularVelocity = Abs(angularOffset);
+            float afterimageOpacity = InverseLerp(0.06f, 0.11f, angularVelocity);
+            VertexPositionColorTexture[] trailVertices = new VertexPositionColorTexture[trailPositions.Count * 2];
+            short[] trailIndices = PrimitiveTrail.GetIndicesFromTrailPoints(trailPositions.Count);
+            for (int i = 0; i < trailPositions.Count; i++)
+            {
+                float trailCompletionRatio = i / (float)(trailPositions.Count - 1f);
+                Vector2 leftTextureCoords = new(trailCompletionRatio, 0f);
+                Vector2 rightTextureCoords = new(trailCompletionRatio, 1f);
+
+                Vector2 forwardDirection = (trailPositions[i] - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                Vector3 leftPosition = new(trailPositions[i] - Projectile.Center, 0f);
+                Vector3 rightPosition = new(trailPositions[i] - Projectile.Center - forwardDirection * Projectile.scale * 60f, 0f);
+
+                Color c = Color.White * afterimageOpacity;
+                trailVertices[i * 2] = new(leftPosition, c, leftTextureCoords);
+                trailVertices[i * 2 + 1] = new(rightPosition, c, rightTextureCoords);
+            }
+
+            // Prepare the trail shader.
+            ManagedShader trailShader = ShaderManager.GetShader("FirstFractalTrailShader");
+            trailShader.SetTexture(WavyBlotchNoise, 1, SamplerState.LinearWrap);
+            trailShader.TrySetParameter("colorA", new Vector3(0.1f, 0.64f, 0.82f));
+            trailShader.TrySetParameter("colorB", new Vector3(1f, 1f, 0.05f));
+            trailShader.TrySetParameter("blackAppearanceInterpolant", 0.3f);
+            trailShader.TrySetParameter("trailAnimationSpeed", 1.5f);
+            trailShader.TrySetParameter("uWorldViewProjection", compositeMatrix);
+            trailShader.Apply();
+
+            // Draw the trail.
+            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, trailVertices, 0, trailVertices.Length, trailIndices, 0, trailIndices.Length / 3);
         }
     }
 }
