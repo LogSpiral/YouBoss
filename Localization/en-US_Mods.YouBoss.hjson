@@ -8,6 +8,8 @@ Projectiles: {
 	TelegraphedTerraBeam.DisplayName: Terra Beam
 	TerraBladeSplit.DisplayName: Terra Blade Component
 	TerraGroundShock.DisplayName: Terra Ground Shock
+	FirstFractalHoldout.DisplayName: First Fractal
+	HomingTerraBeam.DisplayName: Terra Beam
 }
 
 Buffs: {
@@ -21,5 +23,10 @@ Items: {
 	CursedMirror: {
 		DisplayName: Cursed Mirror
 		Tooltip: Summons Yourself
+	}
+
+	FirstFractal: {
+		DisplayName: First Fractal
+		Tooltip: ""
 	}
 }

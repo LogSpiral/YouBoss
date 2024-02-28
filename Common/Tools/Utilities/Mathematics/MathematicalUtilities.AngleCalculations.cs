@@ -24,5 +24,29 @@ namespace YouBoss.Common.Utilities
         /// <param name="v1">The first vector.</param>
         /// <param name="v2">The second vector.</param>
         public static float AngleBetween(this Vector2 v1, Vector2 v2) => Acos(Vector2.Dot(v1.SafeNormalize(Vector2.Zero), v2.SafeNormalize(Vector2.Zero)));
+
+        /// <summary>
+        /// Determines the inverse of a given quaternion.
+        /// </summary>
+        /// <param name="rotation">The quaternion to calculate the inverse of.</param>
+        public static Quaternion Inverse(this Quaternion rotation)
+        {
+            float x = rotation.X;
+            float y = rotation.Y;
+            float z = rotation.Z;
+            float w = rotation.W;
+            float inversionFactor = 1f / (x.Squared() + y.Squared() + z.Squared() + w.Squared());
+            return new Quaternion(x, -y, -z, -w) * inversionFactor;
+        }
+
+        /// <summary>
+        /// Rotates a given vector by a given quaternion rotation.
+        /// </summary>
+        /// <param name="vector">The vector to rotate.</param>
+        /// <param name="rotation">The quaternion to rotate by.</param>
+        public static Vector3 RotatedBy(this Vector3 vector, Quaternion rotation)
+        {
+            return Vector3.Transform(Vector3.Transform(vector, rotation), rotation.Inverse());
+        }
     }
 }

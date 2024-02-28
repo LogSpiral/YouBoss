@@ -224,6 +224,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             // Die once completely invisible.
             if (NPC.Opacity <= 0f)
             {
+                NPC.Center = Target.Center - Vector2.UnitY * 600f;
                 NPC.boss = false;
                 NPC.life = 0;
                 NPC.HitEffect();

@@ -10,6 +10,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System;
 using System.Linq;
+using Terraria.GameContent.ItemDropRules;
+using YouBoss.Content.Items.ItemReworks;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 {
@@ -449,6 +451,15 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         }
 
         #endregion AI
+
+        #region Loot
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<FirstFractal>()));
+        }
+
+        #endregion Loot
 
         #region Collision
 
