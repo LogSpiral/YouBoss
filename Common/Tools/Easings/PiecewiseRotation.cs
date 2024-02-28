@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Terraria;
 
 namespace YouBoss.Common.Tools.Easings
 {
@@ -78,9 +79,12 @@ namespace YouBoss.Common.Tools.Easings
             // Unlike a single Quaternion.Lerp, which would typically invert negative dot products, this has the ability to take un-optimal routes to the destination angle, which is desirable for things such as big swings.
             Quaternion start = segmentToUse.StartingRotation;
             Quaternion end = segmentToUse.EndingRotation;
+            start.Normalize();
+            end.Normalize();
             float similarity = Quaternion.Dot(start, end);
 
             float angle = Acos(Clamp(similarity, -0.9999f, 0.9999f));
+
             float cosecantAngle = 1f / Sin(angle);
             return (start * Sin((1f - segmentInterpolant) * angle) + end * Sin(segmentInterpolant * angle)) * cosecantAngle;
         }

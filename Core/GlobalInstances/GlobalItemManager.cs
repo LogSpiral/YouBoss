@@ -35,7 +35,10 @@ namespace YouBoss.Core.Graphics.Shaders.Screen
         public override bool CanUseItem(Item item, Player player)
         {
             bool result = base.CanUseItem(item, player);
-            foreach (ItemPlayerCondition d in CanUseItemEvent.GetInvocationList().Cast<ItemPlayerCondition>())
+            if (CanUseItemEvent is null)
+                return result;
+
+            foreach (ItemPlayerCondition d in CanUseItemEvent?.GetInvocationList()?.Cast<ItemPlayerCondition>())
                 result &= d.Invoke(item, player);
 
             return result;

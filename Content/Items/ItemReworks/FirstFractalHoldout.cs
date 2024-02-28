@@ -8,9 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using YouBoss.Common.Tools.Easings;
 using YouBoss.Core.Graphics.Shaders;
-using YouBoss.Core.Graphics.Shaders.Screen;
-using static Humanizer.In;
-using static YouBoss.Core.Graphics.Primitives.PrimitiveTrail;
+using static YouBoss.Content.Items.SummonItems.FirstFractal;
 
 namespace YouBoss.Content.Items.SummonItems
 {
@@ -59,49 +57,12 @@ namespace YouBoss.Content.Items.SummonItems
         /// </summary>
         public ref float StartingRotation => ref Projectile.ai[2];
 
-        public static int UseTime => SecondsToFrames(0.58f);
-
-        public static int BaseDamage => 256;
-
         public override string Texture => $"Terraria/Images/Item_{ItemID.FirstFractal}";
 
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 120;
-            GlobalItemManager.SetDefaultsEvent += ChangeFirstFractalInitialization;
-            GlobalItemManager.CanUseItemEvent += ChangeFirstFractalUseCondition;
-        }
-
-        private void ChangeFirstFractalInitialization(Item item)
-        {
-            if (item.type != ItemID.FirstFractal)
-                return;
-
-            item.width = 60;
-            item.height = 60;
-            item.damage = BaseDamage;
-            item.useStyle = ItemUseStyleID.Swing;
-            item.useTime = UseTime;
-            item.useAnimation = UseTime;
-            item.useTurn = true;
-            item.DamageType = DamageClass.MeleeNoSpeed;
-            item.UseSound = null;
-            item.knockBack = 8f;
-            item.autoReuse = true;
-            item.noUseGraphic = true;
-            item.channel = true;
-            item.shoot = Type;
-            item.shootSpeed = 9f;
-            item.rare = ItemRarityID.Purple;
-        }
-
-        private bool ChangeFirstFractalUseCondition(Item item, Player player)
-        {
-            if (item.type != ItemID.FirstFractal)
-                return true;
-
-            return player.ownedProjectileCounts[Type] <= 0;
         }
 
         public override void SetDefaults()
@@ -153,7 +114,7 @@ namespace YouBoss.Content.Items.SummonItems
 
             // Decide the arm rotation for the owner.
             float rotationZAngle = Atan2((Rotation.W * Rotation.Z + Rotation.X * Rotation.Y) * 2f, 1f - (Rotation.Y.Squared() + Rotation.Z.Squared()) * 2f);
-            float armRotation = rotationZAngle - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4;
+            float armRotation = rotationZAngle - (HorizontalDirection == 1f ? PiOver2 : 0f) - HorizontalDirection * PiOver4;
             Owner.SetCompositeArmFront(Math.Abs(armRotation) > 0.01f, Player.CompositeArmStretchAmount.Full, armRotation);
 
             // Glue the sword to its owner.
@@ -192,8 +153,8 @@ namespace YouBoss.Content.Items.SummonItems
                 case 0:
                     Quaternion start = EulerAnglesConversion(-0.06f, 0.12f);
                     Quaternion anticipation = EulerAnglesConversion(-1.26f, 0.47f);
-                    Quaternion slash = EulerAnglesConversion(3.65f, 0.8f);
-                    Quaternion end = EulerAnglesConversion(3.79f, 0.15f);
+                    Quaternion slash = EulerAnglesConversion(2.65f, 0.8f);
+                    Quaternion end = EulerAnglesConversion(2.65f, 0.15f);
 
                     PiecewiseRotation rotation = new PiecewiseRotation().
                         Add(PolynomialEasing.Quadratic, EasingType.Out, anticipation, 0.51f, start).
@@ -218,7 +179,7 @@ namespace YouBoss.Content.Items.SummonItems
         private Quaternion EulerAnglesConversion(float angle2D, float angleSide = 0f)
         {
             float forwardRotationOffset = angle2D * HorizontalDirection + (HorizontalDirection == -1f ? PiOver2 : 0f);
-            return Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationZ(StartingRotation + forwardRotationOffset) * Matrix.CreateRotationX(angleSide));
+            return Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationZ(WrapAngle360(forwardRotationOffset)) * Matrix.CreateRotationX(angleSide));
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -232,7 +193,7 @@ namespace YouBoss.Content.Items.SummonItems
             Matrix translation = Matrix.CreateTranslation(new Vector3(Projectile.Center.X - Main.screenPosition.X, Projectile.Center.Y - Main.screenPosition.Y, 0f));
             Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, -100f, 100f);
             Matrix view = translation * Main.GameViewMatrix.TransformationMatrix * projection;
-            Matrix rotation = Matrix.CreateFromQuaternion(Rotation);
+            Matrix rotation = Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateRotationZ(StartingRotation);
             Matrix scale = Matrix.CreateScale(Projectile.scale);
 
             // Generate the quads in a clockwise orientation.
@@ -248,6 +209,7 @@ namespace YouBoss.Content.Items.SummonItems
             projectionShader.TrySetParameter("uWorldViewProjection", rotation * scale * view);
             projectionShader.Apply();
             Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
             Main.instance.GraphicsDevice.Textures[1] = texture;
             Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, quad, 0, quad.Length, quadIndices, 0, quadIndices.Length / 3);
 

@@ -23,4 +23,9 @@ Items: {
 		DisplayName: Cursed Mirror
 		Tooltip: Summons Yourself
 	}
+
+	FirstFractal: {
+		DisplayName: First Fractal
+		Tooltip: ""
+	}
 }
