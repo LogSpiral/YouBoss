@@ -53,6 +53,11 @@ namespace YouBoss.Content.Items.SummonItems
         }
 
         /// <summary>
+        /// The Z axis' rotation relative to the <see cref="Rotation"/> of this sword.
+        /// </summary>
+        public float RotationZAngle => Atan2((Rotation.W * Rotation.Z + Rotation.X * Rotation.Y) * 2f, 1f - (Rotation.Y.Squared() + Rotation.Z.Squared()) * 2f);
+
+        /// <summary>
         /// The animation completion of the current sword swing.
         /// </summary>
         public float AnimationCompletion => Saturate(Time / UseTime);
@@ -193,6 +198,9 @@ namespace YouBoss.Content.Items.SummonItems
                     Projectile.netUpdate = true;
                 }
             }
+
+            // Store the rotation.
+            Projectile.rotation = StartingRotation + RotationZAngle;
         }
 
         public void HandleSlashes()
@@ -227,24 +235,38 @@ namespace YouBoss.Content.Items.SummonItems
         public void StickToOwner()
         {
             // Glue the sword to its owner.
-            float rotationZAngle = Atan2((Rotation.W * Rotation.Z + Rotation.X * Rotation.Y) * 2f, 1f - (Rotation.Y.Squared() + Rotation.Z.Squared()) * 2f);
             Projectile.Center = Owner.RotatedRelativePoint(Owner.MountedCenter);
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
             if (!DontChangeOwnerDirection)
-                Owner.ChangeDir(AngleToXDirection(rotationZAngle));
+                Owner.ChangeDir(AngleToXDirection(RotationZAngle) * (int)HorizontalDirection);
 
             // Decide the arm rotation for the owner.
-            float armRotation = rotationZAngle - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4 + StartingRotation;
+            float armRotation = RotationZAngle - (HorizontalDirection == 1f ? PiOver2 : Pi) - HorizontalDirection * PiOver4 + StartingRotation;
             Owner.SetCompositeArmFront(Math.Abs(armRotation) > 0.01f, Player.CompositeArmStretchAmount.Full, armRotation);
 
             // Create slash particles.
-            CreateSlashParticles(Vector2.Zero);
+            CreateSlashParticles();
         }
 
-        public void CreateSlashParticles(Vector2 slashDirection)
+        public void CreateSlashParticles()
         {
+            float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
+            float angularVelocity = Abs(angularOffset);
+            if (angularVelocity <= 0.2f)
+                return;
 
+            for (int i = 0; i < 2; i++)
+            {
+                Vector2 forward = (Projectile.rotation - PiOver4).ToRotationVector2();
+                Vector2 perpendicular = forward.RotatedBy(angularOffset.NonZeroSign() * PiOver2);
+                Dust energy = Dust.NewDustPerfect(Projectile.Center + forward * Main.rand.NextFloat(28f, 74f), 264);
+                energy.velocity = perpendicular * 3f;
+                energy.color = Color.Lerp(Color.Turquoise, Color.Yellow, Sqrt(Main.rand.NextFloat(0.95f)));
+                energy.scale = Main.rand.NextFloat(1f, 1.6f);
+                energy.fadeIn = Main.rand.NextFloat(0.9f);
+                energy.noGravity = true;
+            }
         }
 
         public void DoBehavior_Vanish()
@@ -269,7 +291,7 @@ namespace YouBoss.Content.Items.SummonItems
             Rotation = rotationForward.Evaluate(AnimationCompletion, HorizontalDirection == -1f && AnimationCompletion >= 0.7f, 1);
 
             // Ensure that the player's pose doesn't get changed during the anticipation.
-            DontChangeOwnerDirection = AnimationCompletion < 0.6f;
+            DontChangeOwnerDirection = true;
 
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.7f))
@@ -290,6 +312,9 @@ namespace YouBoss.Content.Items.SummonItems
                 Add(new PolynomialEasing(12f), EasingType.InOut, upwardSlash, 0.9f, forwardEnd).
                 Add(PolynomialEasing.Quadratic, EasingType.In, upwardEnd, 1f);
             Rotation = rotationUpward.Evaluate(AnimationCompletion, AnimationCompletion < 0.85f, -1);
+
+            // Ensure that the player's pose doesn't get changed during the anticipation.
+            DontChangeOwnerDirection = true;
 
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.3f))
