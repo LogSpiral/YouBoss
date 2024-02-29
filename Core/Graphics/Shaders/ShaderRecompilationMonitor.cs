@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using YouBoss.Core.Graphics.Shaders.Screen;
 
 namespace YouBoss.Core.Graphics.Shaders
 {
@@ -134,6 +135,12 @@ namespace YouBoss.Core.Graphics.Shaders
                     Effect recompiledEffect = tempManager.Load<Effect>(assetName);
                     Ref<Effect> refEffect = new(recompiledEffect);
                     ShaderManager.SetShader(Path.GetFileNameWithoutExtension(compiledXnbPath), refEffect);
+
+                    if (assetName.Contains("LocalScreenDistortionShader"))
+                    {
+                        Filters.Scene[ScreenDistortShaderData.ShaderKey].Deactivate();
+                        Filters.Scene[ScreenDistortShaderData.ShaderKey] = new Filter(new ScreenDistortShaderData(refEffect, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
+                    }
 
                     Main.NewText($"Shader with the file name '{Path.GetFileName(shaderPath)}' has been successfully recompiled.");
                 });

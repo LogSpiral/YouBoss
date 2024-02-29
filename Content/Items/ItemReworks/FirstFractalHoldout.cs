@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using YouBoss.Assets;
 using YouBoss.Common.Tools.Easings;
+using YouBoss.Core.Graphics.Automators;
 using YouBoss.Core.Graphics.Primitives;
 using YouBoss.Core.Graphics.Shaders;
 using YouBoss.Core.Graphics.SpecificEffectManagers;
@@ -19,8 +20,16 @@ using static YouBoss.Content.Items.ItemReworks.FirstFractal;
 
 namespace YouBoss.Content.Items.ItemReworks
 {
-    public class FirstFractalHoldout : ModProjectile
+    public class FirstFractalHoldout : ModProjectile, IDrawLocalDistortion
     {
+        private List<Vector2> trailPositions;
+
+        private short[] trailIndices;
+
+        private VertexPositionColorTexture[] trailVertices;
+
+        private Matrix compositeVertexMatrix;
+
         /// <summary>
         /// The rotation of the sword in 3D space.
         /// </summary>
@@ -424,7 +433,7 @@ namespace YouBoss.Content.Items.ItemReworks
             // Create homing beams.
             if (Main.myPlayer == Projectile.owner && AnimationCompletion >= 0.25f && Time % 3f == 0f)
             {
-                Vector2 beamVelocity = (ZRotation - PiOver4).ToRotationVector2() * new Vector2(1f, 0.4f) * HomingBeamStartingSpeed;
+                Vector2 beamVelocity = (TwoPi * InverseLerp(0.25f, 1f, AnimationCompletion) + StartingRotation - PiOver4).ToRotationVector2() * new Vector2(1f, 0.4f) * HomingBeamStartingSpeed;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, beamVelocity.RotatedBy(StartingRotation), ModContent.ProjectileType<HomingTerraBeam>(), (int)(Projectile.damage * HomingBeamDamageFactor), 0f, Projectile.owner);
             }
         }
@@ -458,7 +467,7 @@ namespace YouBoss.Content.Items.ItemReworks
             Matrix view = translation * Main.GameViewMatrix.TransformationMatrix * projection;
             Matrix rotation = Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateRotationZ(StartingRotation);
             Matrix scale = Matrix.CreateScale(Projectile.scale);
-            Matrix compositeMatrix = rotation * scale * view;
+            compositeVertexMatrix = rotation * scale * view;
 
             // Generate the quads in a clockwise orientation.
             if (SwordQuad is null)
@@ -471,11 +480,12 @@ namespace YouBoss.Content.Items.ItemReworks
             }
 
             // Draw the afterimage trail.
-            DrawAfterimageTrail(compositeMatrix);
+            DefineAfterimageTrailCache();
+            DrawAfterimageTrail();
 
             // Draw the sword.
             ManagedShader projectionShader = ShaderManager.GetShader("PrimitiveProjectionShader");
-            projectionShader.TrySetParameter("uWorldViewProjection", compositeMatrix);
+            projectionShader.TrySetParameter("uWorldViewProjection", compositeVertexMatrix);
             projectionShader.Apply();
             Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
@@ -485,13 +495,13 @@ namespace YouBoss.Content.Items.ItemReworks
             return false;
         }
 
-        public void DrawAfterimageTrail(Matrix compositeMatrix)
+        public void DefineAfterimageTrailCache()
         {
             // Prepare the list of smoothened positions.
-            int oldPositionCount = 15;
+            int oldPositionCount = 20;
             int subdivisions = 5;
             float afterimageOffset = 118f;
-            List<Vector2> trailPositions = [];
+            trailPositions = [];
             for (int i = 0; i < oldPositionCount; i++)
             {
                 float startingRotation = Projectile.oldRot[i] - Projectile.rotation - PiOver4;
@@ -511,8 +521,8 @@ namespace YouBoss.Content.Items.ItemReworks
             float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
             float angularVelocity = Abs(angularOffset);
             float afterimageOpacity = InverseLerp(0.056f, 0.1f, angularVelocity);
-            VertexPositionColorTexture[] trailVertices = new VertexPositionColorTexture[trailPositions.Count * 2];
-            short[] trailIndices = PrimitiveTrail.GetIndicesFromTrailPoints(trailPositions.Count);
+            trailVertices = new VertexPositionColorTexture[trailPositions.Count * 2];
+            trailIndices = PrimitiveTrail.GetIndicesFromTrailPoints(trailPositions.Count);
             for (int i = 0; i < trailPositions.Count; i++)
             {
                 float trailCompletionRatio = i / (float)(trailPositions.Count - 1f);
@@ -527,7 +537,10 @@ namespace YouBoss.Content.Items.ItemReworks
                 trailVertices[i * 2] = new(leftPosition, c, leftTextureCoords);
                 trailVertices[i * 2 + 1] = new(rightPosition, c, rightTextureCoords);
             }
+        }
 
+        public void DrawAfterimageTrail()
+        {
             // Prepare the trail shader.
             ManagedShader trailShader = ShaderManager.GetShader("FirstFractalTrailShader");
             trailShader.SetTexture(WavyBlotchNoise, 1, SamplerState.LinearWrap);
@@ -535,12 +548,50 @@ namespace YouBoss.Content.Items.ItemReworks
             trailShader.TrySetParameter("colorB", new Vector3(1f, 1f, 0.05f));
             trailShader.TrySetParameter("blackAppearanceInterpolant", 0.36f);
             trailShader.TrySetParameter("trailAnimationSpeed", 1.2f);
-            trailShader.TrySetParameter("uWorldViewProjection", compositeMatrix);
+            trailShader.TrySetParameter("flatOpacity", false);
+            trailShader.TrySetParameter("uWorldViewProjection", compositeVertexMatrix);
             trailShader.Apply();
 
             // Draw the trail.
             Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, trailVertices, 0, trailVertices.Length, trailIndices, 0, trailIndices.Length / 3);
+        }
+
+        public void DrawLocalDistortion(SpriteBatch spriteBatch)
+        {
+            if (trailVertices is null)
+                return;
+
+            float angularOffset = WrapAngle(Projectile.rotation - Projectile.oldRot[1]);
+            float angularVelocity = Abs(angularOffset);
+            float baseDistortion = InverseLerp(0.04f, 0.09f, angularVelocity) * 0.156f;
+            VertexPositionColorTexture[] distortionVertices = new VertexPositionColorTexture[trailVertices.Length];
+            for (int i = 0; i < distortionVertices.Length; i++)
+            {
+                Vector2 distortionPosition = trailPositions[i / 2];
+                Vector2 offsetFromCenter = distortionPosition - Projectile.Center;
+                float distortionAngle = offsetFromCenter.ToRotation() - ZRotation;
+                float distortionX = Cos01(distortionAngle);
+                float distortionY = Sin01(distortionAngle);
+
+                distortionVertices[i] = trailVertices[i];
+                distortionVertices[i].Color = new(distortionX, distortionY, (1f - i % 2) * InverseLerp(8f, 32f, i).Squared() * baseDistortion);
+            }
+
+            // Prepare the trail shader.
+            ManagedShader trailShader = ShaderManager.GetShader("FirstFractalTrailShader");
+            trailShader.SetTexture(WavyBlotchNoise, 1, SamplerState.LinearWrap);
+            trailShader.TrySetParameter("colorA", new Vector3(1f, 1f, 1f));
+            trailShader.TrySetParameter("colorB", new Vector3(1f, 1f, 1f));
+            trailShader.TrySetParameter("blackAppearanceInterpolant", -3f);
+            trailShader.TrySetParameter("trailAnimationSpeed", 0.6f);
+            trailShader.TrySetParameter("flatOpacity", false);
+            trailShader.TrySetParameter("uWorldViewProjection", compositeVertexMatrix);
+            trailShader.Apply();
+
+            // Draw the trail.
+            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, distortionVertices, 0, distortionVertices.Length, trailIndices, 0, trailIndices.Length / 3);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

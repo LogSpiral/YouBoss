@@ -1,5 +1,6 @@
 sampler baseTexture : register(s1);
 
+bool flatOpacity;
 float globalTime;
 float blackAppearanceInterpolant;
 float trailAnimationSpeed;
@@ -48,7 +49,6 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     float2 coords = input.TextureCoordinates;
     float edgeStreakDissipation = smoothstep(0, 1, 1 - coords.x);
     float opacity = smoothstep(0, 0.05, coords.x) * smoothstep(2, 1.45, coords.x * 2 + coords.y * 1.6) * edgeStreakDissipation;
-    
     float blendInterpolant = tex2D(baseTexture, coords * float2(1, 4) + float2(globalTime * -trailAnimationSpeed * 4, 0));
     float blackInterpolant = tex2D(baseTexture, coords * float2(1.1, 1.5) + float2(globalTime * -trailAnimationSpeed * 3.3, blendInterpolant * 0.15));
     float4 color = float4(BlendMode(colorA, colorB * blendInterpolant * 2) * 0.9, 1);
@@ -56,7 +56,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     // Interpolate towards black, creating a harsh contrast between the cyans and yellows.
     color = lerp(color, float4(0.06, 0.06, 0.06, 1), smoothstep(0.3, 0, blackInterpolant - blackAppearanceInterpolant));
     
-    return color * input.Color * opacity;
+    return color * input.Color * (flatOpacity ? 1 : opacity);
 }
 
 technique Technique1
