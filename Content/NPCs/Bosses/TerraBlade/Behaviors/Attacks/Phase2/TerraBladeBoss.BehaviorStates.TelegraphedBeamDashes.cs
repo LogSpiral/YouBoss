@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using YouBoss.Assets;
-using YouBoss.Common.Tools.Reflection;
-using YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using YouBoss.Assets;
+using YouBoss.Common.Tools.Reflection;
+using YouBoss.Content.NPCs.Bosses.TerraBlade.Projectiles;
 using YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers;
 
 namespace YouBoss.Content.NPCs.Bosses.TerraBlade
@@ -40,7 +40,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             get
             {
                 bool attackStartingOrEnding = TelegraphedBeamDashes_DashCounter <= 0f || TelegraphedBeamDashes_DashCounter >= TelegraphedBeamDashes_DashCount;
-                float hoverRedirectSeconds = attackStartingOrEnding ? 0.63f : 0.3167f;
+                float hoverRedirectSeconds = attackStartingOrEnding ? 0.9f : 0.3167f;
                 if (Main.masterMode)
                     hoverRedirectSeconds -= 0.045f;
 
@@ -51,7 +51,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         /// <summary>
         /// How long the terra blade spends reeling back during the telegraphed beam dashes attack.
         /// </summary>
-        public static int TelegraphedBeamDashes_ReelBackTime => SecondsToFrames(Main.masterMode ? 0.41f : 0.45f);
+        public static int TelegraphedBeamDashes_ReelBackTime => SecondsToFrames(Main.masterMode ? 0.425f : 0.475f);
 
         /// <summary>
         /// How long the terra blade waits before slowing the dash down during the telegraphed beam dashes attack.
