@@ -22,6 +22,7 @@ namespace YouBoss.Content.Items.ItemReworks
 {
     public class FirstFractalHoldout : ModProjectile, IDrawLocalDistortion
     {
+        #region Instance Fields/Properties
         private List<Vector2> trailPositions;
 
         private short[] trailIndices;
@@ -123,6 +124,10 @@ namespace YouBoss.Content.Items.ItemReworks
         /// </summary>
         public ref float StartingRotation => ref Projectile.ai[2];
 
+        #endregion Instance Fields/Properties
+
+        #region Static Fields/Properties
+
         /// <summary>
         /// The amount of updates this sword performs each frame. Higher values for this are useful because they allow for finer subdivisions of the swing animations, thus making the rotation changes less sudden each frame.
         /// </summary>
@@ -154,6 +159,10 @@ namespace YouBoss.Content.Items.ItemReworks
 
         public override string Texture => "YouBoss/Content/Items/ItemReworks/FirstFractal";
 
+        #endregion Static Fields/Properties
+
+        #region Initialization
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -175,6 +184,10 @@ namespace YouBoss.Content.Items.ItemReworks
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = MaxUpdates * 3;
         }
+
+        #endregion Initialization
+
+        #region Network Syncing
 
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -209,6 +222,9 @@ namespace YouBoss.Content.Items.ItemReworks
             Rotation = new(x, y, z, w);
         }
 
+        #endregion Network Syncing
+
+        #region AI
         public override void AI()
         {
             // Initialize things.
@@ -274,6 +290,12 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Store the rotation.
             Projectile.rotation = StartingRotation + ZRotation;
+        }
+
+        private Quaternion EulerAnglesConversion(float angle2D, float angleSide = 0f)
+        {
+            float forwardRotationOffset = angle2D * HorizontalDirection + (HorizontalDirection == -1f ? PiOver2 : 0f);
+            return Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationZ(WrapAngle360(forwardRotationOffset)) * Matrix.CreateRotationX(angleSide));
         }
 
         public void HandleSlashes()
@@ -438,14 +460,25 @@ namespace YouBoss.Content.Items.ItemReworks
             }
         }
 
-        private Quaternion EulerAnglesConversion(float angle2D, float angleSide = 0f)
-        {
-            float forwardRotationOffset = angle2D * HorizontalDirection + (HorizontalDirection == -1f ? PiOver2 : 0f);
-            return Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationZ(WrapAngle360(forwardRotationOffset)) * Matrix.CreateRotationX(angleSide));
-        }
-
         // This projectile should remain glued to the owner's hand, and not move.
         public override bool ShouldUpdatePosition() => false;
+
+        #endregion AI
+
+        #region Collision
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (OwnerIsDashing && AnimeHitVisualsCountdown <= 0)
+            {
+                if (TerraBladeSilhouetteDrawSystem.SilhouetteOpacity <= 0f)
+                    TerraBladeSilhouetteDrawSystem.Subject = target;
+
+                AnimeHitVisualsCountdown = AnimeVisualsDuration;
+                StartShakeAtPoint(target.Center, 6.4f);
+                Owner.SetImmuneTimeForAllTypes(PlayerPostHitIFrameGracePeriod);
+            }
+        }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
@@ -455,6 +488,10 @@ namespace YouBoss.Content.Items.ItemReworks
             Vector2 end = start + swordDirection * Projectile.scale * 112f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, Projectile.width * 0.5f, ref _);
         }
+
+        #endregion Collision
+
+        #region Drawing
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -594,17 +631,6 @@ namespace YouBoss.Content.Items.ItemReworks
             Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, distortionVertices, 0, distortionVertices.Length, trailIndices, 0, trailIndices.Length / 3);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        {
-            if (OwnerIsDashing && AnimeHitVisualsCountdown <= 0)
-            {
-                if (TerraBladeSilhouetteDrawSystem.SilhouetteOpacity <= 0f)
-                    TerraBladeSilhouetteDrawSystem.Subject = target;
-
-                AnimeHitVisualsCountdown = AnimeVisualsDuration;
-                StartShakeAtPoint(target.Center, 6.4f);
-                Owner.SetImmuneTimeForAllTypes(PlayerPostHitIFrameGracePeriod);
-            }
-        }
+        #endregion Drawing
     }
 }
