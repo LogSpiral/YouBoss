@@ -1,6 +1,6 @@
 sampler baseTexture : register(s0);
 sampler distortionMap : register(s1);
-sampler uImage2 : register(s2);
+sampler distortionExclusionMap : register(s2);
 sampler uImage3 : register(s3);
 float3 uColor;
 float3 uSecondaryColor;
@@ -31,11 +31,21 @@ float2 GetDistortionDirection(float2 coords)
     return float2(x, y) * distortionMapValue.z;
 }
 
+float2 GetDistortionDirectionBlurred(float2 coords)
+{
+    float2 distortion = GetDistortionDirection(coords);
+    for (int i = -3; i <= 3; i++)
+        distortion += GetDistortionDirection(coords + float2(i * 0.003, 0)) / (abs(i) * 0.7 + 1);
+    for (i = -3; i <= 3; i++)
+        distortion += GetDistortionDirection(coords + float2(0, i * 0.003)) / (abs(i) * 0.7 + 1);
+    
+    return distortion;
+}
+
 float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 coords : TEXCOORD0) : COLOR0
 {
-    float2 distortionOffset = GetDistortionDirection(coords);
-    
-    return tex2D(baseTexture, coords + distortionOffset * 0.04);
+    float2 distortionOffset = GetDistortionDirectionBlurred(coords) * (1.025 - pow(tex2D(distortionExclusionMap, coords).a, 0.17));
+    return tex2D(baseTexture, coords + distortionOffset * 0.05);
 }
 technique Technique1
 {

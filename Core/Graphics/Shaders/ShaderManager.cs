@@ -48,7 +48,7 @@ namespace YouBoss.Core.Graphics.Shaders
             Filters.Scene[RadialScreenShoveShaderData.ShaderKey] = new Filter(new RadialScreenShoveShaderData(s2, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
 
             Ref<Effect> s3 = new(Mod.Assets.Request<Effect>("Assets/Effects/ScreenDistortions/LocalScreenDistortionShader", AssetRequestMode.ImmediateLoad).Value);
-            Filters.Scene[ScreenDistortShaderData.ShaderKey] = new Filter(new ScreenDistortShaderData(s2, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
+            Filters.Scene[ScreenDistortShaderData.ShaderKey] = new Filter(new ScreenDistortShaderData(s3, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
 
             HasFinishedLoading = true;
         }

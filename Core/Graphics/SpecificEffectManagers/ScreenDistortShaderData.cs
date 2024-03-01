@@ -22,6 +22,15 @@ namespace YouBoss.Core.Graphics.Shaders.Screen
             private set;
         }
 
+        /// <summary>
+        /// The render target that holds all positions on the screen where distortions should not be applied.
+        /// </summary>
+        public static LocalDistortionExclusionTargetContent DistortionExclusionDrawContent
+        {
+            get;
+            private set;
+        }
+
         public static void ToggleActivityIfNecessary()
         {
             if (Main.netMode == NetmodeID.Server)
@@ -51,14 +60,22 @@ namespace YouBoss.Core.Graphics.Shaders.Screen
                 DistortionDrawContents = new();
                 Main.ContentThatNeedsRenderTargets.Add(DistortionDrawContents);
             }
+            if (DistortionExclusionDrawContent is null)
+            {
+                DistortionExclusionDrawContent = new();
+                Main.ContentThatNeedsRenderTargets.Add(DistortionExclusionDrawContent);
+            }
 
             // If the drawer isn't ready, wait until it is.
             DistortionDrawContents.Request();
+            DistortionExclusionDrawContent.Request();
 
             // Supply the distortion target to the graphics device.
             var gd = Main.instance.GraphicsDevice;
             gd.Textures[1] = DistortionDrawContents.IsReady ? DistortionDrawContents.GetTarget() : InvisiblePixel;
             gd.SamplerStates[1] = SamplerState.LinearClamp;
+            gd.Textures[2] = DistortionExclusionDrawContent.IsReady ? DistortionExclusionDrawContent.GetTarget() : InvisiblePixel;
+            gd.SamplerStates[2] = SamplerState.LinearClamp;
             base.Apply();
         }
     }

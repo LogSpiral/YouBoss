@@ -27,6 +27,11 @@ namespace YouBoss.Content.Items.ItemReworks
         public static float HomingBeamDamageFactor => 0.2f;
 
         /// <summary>
+        /// The damage factor for the projectile slashes relative to the sword's damage.
+        /// </summary>
+        public static float HomingSlashDamageFactor => 0.4f;
+
+        /// <summary>
         /// The acceleration of the homing terra beams.
         /// </summary>
         public static float HomingBeamAcceleration => 1.38f;

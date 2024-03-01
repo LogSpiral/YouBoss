@@ -8,7 +8,7 @@ using YouBoss.Core.Graphics.Automators;
 
 namespace YouBoss.Core.Graphics.SpecificEffectManagers
 {
-    public class LocalDistortionTargetContent : ARenderTargetContentByRequest
+    public class LocalDistortionExclusionTargetContent : ARenderTargetContentByRequest
     {
         protected override void HandleUseReqest(GraphicsDevice device, SpriteBatch spriteBatch)
         {
@@ -36,9 +36,9 @@ namespace YouBoss.Core.Graphics.SpecificEffectManagers
                 return p.active && p.ModProjectile is IDrawLocalDistortion drawer && !p.IsOffscreen();
             }).Select(p => p.ModProjectile as IDrawLocalDistortion).ToList();
 
-            // Draw all projectiles that have the distortion interface.
+            // Draw all projectiles that have the distortion interface's exclusion zones.
             foreach (var drawer in distortionDrawers)
-                drawer.DrawLocalDistortion(Main.spriteBatch);
+                drawer.DrawLocalDistortionExclusion(Main.spriteBatch);
         }
     }
 }
