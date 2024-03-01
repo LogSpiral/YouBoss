@@ -14,7 +14,7 @@ namespace YouBoss.Content.Items.ItemReworks
         /// <summary>
         /// The base damage of the sword.
         /// </summary>
-        public static int BaseDamage => 1500;
+        public static int BaseDamage => 1250;
 
         /// <summary>
         /// How far homing terra beams can search to find a potential target.

@@ -469,11 +469,18 @@ namespace YouBoss.Content.Items.ItemReworks
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            // Create slashes and shadow clones.
             if (Main.myPlayer == Projectile.owner)
             {
+                // Create the slash.
                 Vector2 slashSpawnPosition = target.Center + Main.rand.NextVector2Circular(10f, 10f);
                 Vector2 slashDirection = Projectile.DirectionToSafe(target.Center).RotatedByRandom(Pi * 0.6667f);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), slashSpawnPosition, slashDirection, ModContent.ProjectileType<TerraSlash>(), (int)(Projectile.damage * HomingSlashDamageFactor), 0f, Projectile.owner);
+
+                // Create the shadow clone.
+                Vector2 cloneSpawnPosition = slashSpawnPosition - slashDirection * Main.rand.NextFloat(275f, 336f);
+                Vector2 cloneVelocity = (target.Center - cloneSpawnPosition).SafeNormalize(Vector2.UnitY) * 42f;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), cloneSpawnPosition, cloneVelocity, ModContent.ProjectileType<PlayerShadowClone>(), (int)(Projectile.damage * HomingSlashDamageFactor), 0f, Projectile.owner);
             }
 
             if (OwnerIsDashing && AnimeHitVisualsCountdown <= 0)
