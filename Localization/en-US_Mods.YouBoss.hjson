@@ -1,4 +1,13 @@
-NPCs.TerraBladeBoss.DisplayName: Terra Blade
+NPCs: {
+	TerraBladeBoss: {
+		DisplayName: Terra Blade
+
+		BossChecklistIntegration: {
+			SpawnInfo: Use the [i:YouBoss/CursedMirror]
+			DespawnMessage: "[c/0EA85D:You disappeared.]"
+		}
+	}
+}
 
 Projectiles: {
 	AcceleratingTerraBeam.DisplayName: Terra Beam
