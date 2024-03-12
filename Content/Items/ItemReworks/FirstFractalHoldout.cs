@@ -525,8 +525,8 @@ namespace YouBoss.Content.Items.ItemReworks
             {
                 VertexPositionColorTexture topLeft = new(new(0f, -quadArea.Y, 0f), Color.White, Vector2.One * 0.01f);
                 VertexPositionColorTexture topRight = new(new(quadArea.X, -quadArea.Y, 0f), Color.White, Vector2.UnitX * 0.99f);
-                VertexPositionColorTexture bottomLeft = new(new(0f, 0f, 0f), Color.White, Vector2.UnitY * 0.99f);
                 VertexPositionColorTexture bottomRight = new(new(quadArea.X, 0f, 0f), Color.White, Vector2.One * 0.99f);
+                VertexPositionColorTexture bottomLeft = new(new(0f, 0f, 0f), Color.White, Vector2.UnitY * 0.99f);
                 SwordQuad = [topLeft, topRight, bottomRight, bottomLeft];
             }
 
