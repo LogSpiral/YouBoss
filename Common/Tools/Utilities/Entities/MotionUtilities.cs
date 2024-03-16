@@ -12,7 +12,6 @@ namespace YouBoss.Common.Utilities
         /// <param name="destination">The position to get the direction towards.</param>
         public static Vector2 DirectionToSafe(this Entity entity, Vector2 destination)
         {
-            // I would prefer the name SafeDirectionTo but that name is already taken by Calamity's utility and having the exact same name could lead to ambiguity issues.
             return (destination - entity.Center).SafeNormalize(Vector2.Zero);
         }
 

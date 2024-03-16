@@ -76,7 +76,7 @@ namespace YouBoss.Content.Items.ItemReworks
             float animationCompletion = Time / Lifetime;
 
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D bloomTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
+            Texture2D bloomTexture = BloomCircleSmall;
 
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() * 0.5f;
