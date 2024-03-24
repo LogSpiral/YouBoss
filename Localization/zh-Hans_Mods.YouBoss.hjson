@@ -1,0 +1,43 @@
+NPCs: {
+	TerraBladeBoss: {
+		DisplayName: 泰拉刃
+
+		BossChecklistIntegration: {
+			SpawnInfo: 使用[i:YouBoss/CursedMirror]
+			DespawnMessage: "[c/0EA85D:“你”消失了。]"
+		}
+	}
+}
+
+Projectiles: {
+	AcceleratingTerraBeam.DisplayName: 泰拉光束
+	ArcingLightBeam.DisplayName: 光明光束
+	ArcingNightBeam.DisplayName: 永夜光束
+	ArcingTerraBeam.DisplayName: 泰拉光束
+	TelegraphedTerraBeam.DisplayName: 泰拉光束
+	TerraBladeSplit.DisplayName: 泰拉刃部件
+	TerraGroundShock.DisplayName: 泰拉震击
+	FirstFractalHoldout.DisplayName: 第一分型
+	HomingTerraBeam.DisplayName: 泰拉光束
+	TerraSlash.DisplayName: 泰拉斩切
+	PlayerShadowClone.DisplayName: 克隆幻影
+}
+
+Buffs: {
+	GracedWings: {
+		DisplayName: 飘逸之翼
+		Description: 准许无限而快速的飞行
+	}
+}
+
+Items: {
+	CursedMirror: {
+		DisplayName: 诅咒魔镜
+		Tooltip: 召唤自我
+	}
+
+	FirstFractal: {
+		DisplayName: 第一分型
+		Tooltip: ""
+	}
+}
