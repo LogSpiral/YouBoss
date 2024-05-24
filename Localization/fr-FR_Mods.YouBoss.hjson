@@ -1,0 +1,43 @@
+NPCs: {
+	TerraBladeBoss: {
+		DisplayName: Lame Terra
+
+		BossChecklistIntegration: {
+			SpawnInfo: Utilisez le [i:YouBoss/CursedMirror]
+			DespawnMessage: "[c/0EA85D : Vous avez disparu.]"
+		}
+	}
+}
+
+Projectiles: {
+	AcceleratingTerraBeam.DisplayName: Faisceau Terra
+	ArcingLightBeam.DisplayName: Faisceau Lumineux
+	ArcingNightBeam.DisplayName: Faisceau Sombre
+	ArcingTerraBeam.DisplayName: Faisceau Terra
+	TelegraphedTerraBeam.DisplayName: Faisceau Terra
+	TerraBladeSplit.DisplayName: Composant de Lame Terra
+	TerraGroundShock.DisplayName: Choc Terra
+	FirstFractalHoldout.DisplayName: Premier Fractal
+	HomingTerraBeam.DisplayName: Faisceau Terra
+	TerraSlash.DisplayName: Slash Terra
+	PlayerShadowClone.DisplayName: Clone de l'ombre
+}
+
+Buffs: {
+	GracedWings: {
+		DisplayName: Ailes Bénites
+		Description: Sans fin, le vol rapide vous est accordé
+	}
+}
+
+Items: {
+	CursedMirror: {
+		DisplayName: Mirror Maudit
+		Tooltip: Vous fait apparaître
+	}
+
+	FirstFractal: {
+		DisplayName: Premier Fractal
+		Tooltip: ""
+	}
+}
