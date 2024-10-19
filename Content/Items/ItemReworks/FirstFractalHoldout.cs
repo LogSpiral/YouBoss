@@ -167,6 +167,22 @@ namespace YouBoss.Content.Items.ItemReworks
         {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 120;
+
+            On_Player.ResizeHitbox += DisableMaxFallSpeed;
+        }
+
+        private void DisableMaxFallSpeed(On_Player.orig_ResizeHitbox orig, Player self)
+        {
+            orig(self);
+
+            foreach (Projectile projectile in Main.ActiveProjectiles)
+            {
+                if (projectile.active && projectile.owner == self.whoAmI && projectile.ModProjectile is FirstFractalHoldout firstFractal)
+                {
+                    if (firstFractal.OwnerIsDashing)
+                        self.maxFallSpeed = PlayerDashSpeed * 1.5f;
+                }
+            }
         }
 
         public override void SetDefaults()
@@ -399,8 +415,7 @@ namespace YouBoss.Content.Items.ItemReworks
             // Shake the screen as the swing begins.
             if (Time == (int)(UseTime * 0.7f))
             {
-                Owner.velocity.X = HorizontalDirection * PlayerHorizontalDashSpeed;
-                Owner.velocity.Y *= Exp(PlayerHorizontalDashSpeed * -0.0145f);
+                Owner.velocity = StartingRotation.ToRotationVector2() * PlayerDashSpeed;
 
                 StartShakeAtPoint(Projectile.Center, 2.8f);
                 SoundEngine.PlaySound(SoundsRegistry.TerraBlade.DashSound with { Pitch = Main.rand.NextFloat(0.06f) }, Projectile.Center);
@@ -413,7 +428,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Slow the player down after the dash.
             if (Time == (int)(UseTime * 0.95f) && AnimeHitVisualsCountdown <= 0)
-                Owner.velocity.X *= 0.17f;
+                Owner.velocity *= 0.17f;
 
             // Appear in the player's hand.
             if (SwingCounter <= 0)
@@ -455,7 +470,9 @@ namespace YouBoss.Content.Items.ItemReworks
             // Create homing beams.
             if (Main.myPlayer == Projectile.owner && AnimationCompletion >= 0.25f && Time % 3f == 0f)
             {
-                Vector2 beamVelocity = (TwoPi * InverseLerp(0.25f, 1f, AnimationCompletion) + StartingRotation - PiOver4).ToRotationVector2() * new Vector2(1f, 0.4f) * HomingBeamStartingSpeed;
+                float spinDirection = Cos(StartingRotation).NonZeroSign();
+                Vector2 beamVelocity = (TwoPi * InverseLerp(0.25f, 1f, AnimationCompletion) * spinDirection + StartingRotation - PiOver4).ToRotationVector2() * new Vector2(1f, 0.4f) * HomingBeamStartingSpeed;
+
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, beamVelocity.RotatedBy(StartingRotation), ModContent.ProjectileType<HomingTerraBeam>(), (int)(Projectile.damage * HomingBeamDamageFactor), 0f, Projectile.owner);
             }
         }

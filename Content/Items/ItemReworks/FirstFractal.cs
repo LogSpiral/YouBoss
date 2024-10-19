@@ -52,9 +52,9 @@ namespace YouBoss.Content.Items.ItemReworks
         public static int PlayerPostHitIFrameGracePeriod => SecondsToFrames(0.8f);
 
         /// <summary>
-        /// The horizontal speed of the player during the super dash.
+        /// The speed of the player during the super dash.
         /// </summary>
-        public static float PlayerHorizontalDashSpeed => 95f;
+        public static float PlayerDashSpeed => 95f;
 
         /// <summary>
         /// The starting speed of homing terra beams upon being spawned.
