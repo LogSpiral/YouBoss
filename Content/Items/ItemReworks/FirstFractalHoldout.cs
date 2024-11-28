@@ -396,9 +396,6 @@ namespace YouBoss.Content.Items.ItemReworks
             if (Main.myPlayer == Projectile.owner && Time < MaxUpdates * 10f && SwingCounter >= 1)
             {
                 float baseRotation = Projectile.AngleTo(Main.MouseWorld);
-                if (Sin(baseRotation) > Sin(OldStartingRotation))
-                    baseRotation += Pi;
-
                 StartingRotation = StartingRotation.AngleLerp(baseRotation, Time / MaxUpdates / 35f);
             }
 
@@ -537,6 +534,10 @@ namespace YouBoss.Content.Items.ItemReworks
             Matrix scale = Matrix.CreateScale(Projectile.scale);
             compositeVertexMatrix = rotation * scale * view;
 
+            Matrix swordVertexMatrix = compositeVertexMatrix;
+            if (HorizontalDirection == -1f)
+                swordVertexMatrix = Matrix.CreateReflection(new Plane(Vector3.UnitX, 1f)) * Matrix.CreateRotationZ(PiOver2) * swordVertexMatrix;
+
             // Generate the quads in a clockwise orientation.
             if (SwordQuad is null)
             {
@@ -553,7 +554,7 @@ namespace YouBoss.Content.Items.ItemReworks
 
             // Draw the sword.
             ManagedShader projectionShader = ShaderManager.GetShader("PrimitiveProjectionShader");
-            projectionShader.TrySetParameter("uWorldViewProjection", compositeVertexMatrix);
+            projectionShader.TrySetParameter("uWorldViewProjection", swordVertexMatrix);
             projectionShader.Apply();
             Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             Main.instance.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
