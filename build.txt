@@ -1,5 +1,5 @@
 displayName = You
-author = Dominic Karma
+author = Lucille Karma
 version = 1.0.14
 buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, .github\*, LICENSE, README.md, .editorconfig, .gitignore, .gitattributes, Assets\Effects\Compiler\*
 hideCode = false
