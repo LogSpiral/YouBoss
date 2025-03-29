@@ -142,7 +142,9 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
                 return myself;
             }
-            private set => myself = value;
+            // Turn into internal
+            // set to null on enter world
+            internal set => myself = value;
         }
 
         /// <summary>
