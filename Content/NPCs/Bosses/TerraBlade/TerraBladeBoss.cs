@@ -190,11 +190,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
             On_Main.DrawNPCHeadBoss += DrawPlayerHeadOnMap;
         }
 
-        private void DrawPlayerHeadOnMap(On_Main.orig_DrawNPCHeadBoss orig, Entity npc, byte alpha, float headScale, float rotation, SpriteEffects direction, int bossHeadId, float x, float y)
+        private void DrawPlayerHeadOnMap(On_Main.orig_DrawNPCHeadBoss orig, Entity entity, byte alpha, float headScale, float rotation, SpriteEffects direction, int bossHeadId, float x, float y)
         {
-            if (npc is NPC n && n.type == Type)
+            if (entity is NPC npc && npc.ModNPC is TerraBladeBoss terraBlade)
             {
-                float opacity = alpha / 255f * n.Opacity * n.As<TerraBladeBoss>().PlayerAppearanceInterpolant;
+                float opacity = alpha / 255f * npc.Opacity * terraBlade.PlayerAppearanceInterpolant;
                 if (opacity <= 0f)
                     return;
 
@@ -202,14 +202,14 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
                 Vector2 headDrawPosition = new(x, y);
 
                 int oldDirection = Main.LocalPlayer.direction;
-                Main.LocalPlayer.direction = AngleToXDirection(n.rotation);
+                Main.LocalPlayer.direction = AngleToXDirection(npc.rotation);
                 Main.MapPlayerRenderer.DrawPlayerHead(Main.Camera, Main.LocalPlayer, headDrawPosition.Floor(), opacity, headScale, borderColor);
                 Main.LocalPlayer.direction = oldDirection;
 
                 return;
             }
 
-            orig(npc, alpha, headScale, rotation, direction, bossHeadId, x, y);
+            orig(entity, alpha, headScale, rotation, direction, bossHeadId, x, y);
         }
 
         public override void SetDefaults()

@@ -6,7 +6,7 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade.SpecificEffectManagers
 {
     public class TerraBladeSkyScene : ModSceneEffect
     {
-        public override bool IsSceneEffectActive(Player player) => TerraBladeBoss.Myself is not null && !TerraBladeBoss.Myself.As<TerraBladeBoss>().PerformingStartAnimation;
+        public override bool IsSceneEffectActive(Player player) => TerraBladeBoss.Myself?.ModNPC is TerraBladeBoss terraBlade && terraBlade.PerformingStartAnimation;
 
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
 
