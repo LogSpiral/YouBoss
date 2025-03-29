@@ -17,6 +17,16 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         public ref float StruggleOutOfBlocks_StruggleDirection => ref NPC.ai[0];
 
         /// <summary>
+        /// The totalTime used to StruggleOutOfBlocks
+        /// </summary>
+        public ref float StruggleOutOfBlocks_TotalUsedTime => ref NPC.ai[1];
+
+        /// <summary>
+        /// Max struggle time so that It won't struggle under plenty of tiles
+        /// </summary>
+        public const float MAXSTRUGGLETIME = 180;
+
+        /// <summary>
         /// How long the terra blade should be free to float for after struggling outside of blocks.
         /// </summary>
         public static int StruggleOutOfBlocks_FloatTime => SecondsToFrames(0.45f);
@@ -44,10 +54,11 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
 
             // Disable damage.
             NPC.dontTakeDamage = true;
-
+            StruggleOutOfBlocks_TotalUsedTime++;
             // Prevent natural movement in the tiles while stuck.
+            // Add a timer so that it won't stuck in plenty of tiles for a VERY long time
             bool stuck = Collision.SolidCollision(NPC.TopLeft, NPC.width, NPC.height - 4, true);
-            if (stuck)
+            if (stuck && StruggleOutOfBlocks_TotalUsedTime < MAXSTRUGGLETIME)
             {
                 CanMove = false;
                 OriginOffset = new Vector2(0.5f, -0.5f);

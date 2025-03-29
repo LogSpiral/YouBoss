@@ -131,12 +131,12 @@ namespace YouBoss.Content.NPCs.Bosses.TerraBlade
         {
             get
             {
-                //Add Type Check for safty
-                //the previous version, for example
-                //Sommon the boss, and it is in Main.npc[0]
-                //then In AI(), this field is assigned to Main.npc[0]
-                //BUT after the boss appearing and some NPC else spawn in Main.npc[0]
-                //This Still NOT return null, cause NullReferenceException in NPC.As<TerrariaBladeBoss>.SomeProperty
+                // Add Type Check for safty
+                // the previous version, for example
+                // Sommon the boss, and it is in Main.npc[0]
+                // then In AI(), this field is assigned to Main.npc[0]
+                // BUT after the boss appearing and some NPC else spawn in Main.npc[0]
+                // This Still NOT return null, cause NullReferenceException in NPC.As<TerrariaBladeBoss>.SomeProperty
                 if (myself is not null && (!myself.active || myself.ModNPC is not TerraBladeBoss))
                     return null;
 
